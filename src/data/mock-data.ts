@@ -92,5 +92,5 @@ export const products: Product[] = [
   { slug: "weekly-reset-kit", folderSlug: "digital-tools", name: "Weekly reset kit", description: "A calm printable and digital ritual for making space for the week ahead.", priceLabel: "$9", stock: "In stock", image: "https://images.pexels.com/photos/5905445/pexels-photo-5905445.jpeg?auto=compress&cs=tinysrgb&w=1200", labels: ["Recommended"] },
 ];
 
-export const getPublishedFolders = (folders: Folder[]): Folder[] => folders.filter((folder) => folder.status === "published");
+export const getPublicFolders = (folders: Folder[]): Folder[] => folders.filter((folder) => folder.status === "published" || folder.status === "maintenance");
 export const getFolder = (folders: Folder[], slug: string): Folder | undefined => folders.find((folder) => folder.slug === slug);
