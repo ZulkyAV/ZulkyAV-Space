@@ -1,14 +1,5 @@
-import { FolderCard } from "@/components/ui";
+import { FolderCard, ProductCard } from "@/components/ui";
 import { PageShell } from "@/components/page-shell";
-import { getPublicShopIndex } from "@/lib/data/public-shop";
+import { getPublicFolders, productFolders, products } from "@/data/mock-data";
 
-export const revalidate = 300;
-
-export default async function JualanPage() {
-  const { folders, error } = await getPublicShopIndex();
-  return <PageShell eyebrow="Small ventures" title="Made and available." description="Produk dari small ventures yang lagi gw jalanin, lengkap dengan pilihan menu dan update stoknya.">
-    {error ? <p className="mb-6 rounded-xl bg-warning-50 p-4 text-sm text-warning-700">{error}</p> : null}
-    <div className="grid gap-5 md:grid-cols-3">{folders.map((folder) => <FolderCard key={folder.slug} folder={folder} basePath="/jualan" />)}</div>
-    {!error && !folders.length ? <div className="rounded-2xl border border-dashed border-white/15 bg-[#14141A] p-10 text-center"><p className="font-semibold text-neutral-200">No public shop folders yet.</p></div> : null}
-  </PageShell>;
-}
+export default function JualanPage() { return <PageShell eyebrow="The small shop" title="Useful things, made slowly." description="A small collection of studio goods and digital tools. Limited by design, considered in detail."><div className="grid gap-5 md:grid-cols-3">{getPublicFolders(productFolders).map((folder) => <FolderCard key={folder.slug} folder={folder} basePath="/jualan" />)}</div><div className="mt-20"><div className="mb-6 flex items-end justify-between"><h2 className="text-2xl font-bold text-neutral-950">The shelf</h2><span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400">Mock catalogue</span></div><div className="grid gap-6 md:grid-cols-3">{products.map((product) => <ProductCard key={product.slug} product={product} />)}</div></div></PageShell>; }

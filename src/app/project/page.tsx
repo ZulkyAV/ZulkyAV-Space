@@ -1,38 +1,5 @@
-import { FolderCard } from "@/components/ui";
+import { FolderCard, ProjectCard } from "@/components/ui";
 import { PageShell } from "@/components/page-shell";
-import { getPublicProjectIndex } from "@/lib/data/public-projects";
+import { getPublicFolders, projectFolders, projects } from "@/data/mock-data";
 
-export const revalidate = 300;
-
-export default async function ProjectPage() {
-  const { folders, error } = await getPublicProjectIndex();
-
-  return (
-    <PageShell
-      eyebrow="Work in progress"
-      title="Things I’m building."
-      description="Kumpulan project, eksperimen, dan ide yang lagi gw develop jadi sesuatu yang lebih nyata."
-    >
-      {error ? (
-        <p className="rounded-xl bg-error-50 px-4 py-3 text-sm text-error-700">
-          {error}
-        </p>
-      ) : null}
-
-      <div className="grid gap-5 md:grid-cols-3">
-        {folders.map((folder) => (
-          <FolderCard key={folder.slug} folder={folder} basePath="/project" />
-        ))}
-      </div>
-
-      {!error && !folders.length ? (
-        <div className="rounded-2xl border border-dashed border-white/15 bg-[#14141A] p-10 text-center">
-          <p className="font-semibold text-neutral-200">
-            No public Project folders yet.
-          </p>
-        </div>
-      ) : null}
-
-    </PageShell>
-  );
-}
+export default function ProjectPage() { return <PageShell eyebrow="The workshop" title="Projects in progress." description="A record of experiments, tools, and ideas being shaped into something useful."><div className="grid gap-5 md:grid-cols-3">{getPublicFolders(projectFolders).map((folder) => <FolderCard key={folder.slug} folder={folder} basePath="/project" />)}</div><div className="mt-20"><h2 className="mb-6 text-2xl font-bold text-neutral-950">Selected builds</h2><div className="grid gap-6 md:grid-cols-3">{projects.map((project) => <ProjectCard key={project.slug} project={project} />)}</div></div></PageShell>; }
