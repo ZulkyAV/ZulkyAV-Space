@@ -1,6 +1,6 @@
 import "server-only";
 
-import type { Folder, FolderStatus, Project } from "@/data/mock-data";
+import type { Folder, FolderStatus, Project } from "@/types/content";
 import { createPublicClient } from "@/lib/supabase/public";
 
 type FolderRow = {
@@ -60,7 +60,11 @@ function stageLabel(stage: string) {
     .join(" ");
 }
 
-function mapFolder(row: FolderRow, count: number): Folder {
+function mapFolder(
+  row: FolderRow,
+  count: number,
+  featured?: ProjectRow,
+): Folder {
   return {
     slug: row.slug,
     name: row.name,
@@ -68,6 +72,8 @@ function mapFolder(row: FolderRow, count: number): Folder {
     accent: row.accent,
     status: row.status,
     count,
+    coverImage: featured?.image_url ?? undefined,
+    coverLabel: featured?.title,
   };
 }
 
@@ -126,17 +132,25 @@ export async function getPublicProjectIndex(): Promise<PublicProjectIndexResult>
     }
 
     const counts = new Map<string, number>();
+    const featuredByFolder = new Map<string, ProjectRow>();
     projectRows.forEach((project) => {
       counts.set(
         project.folder_id,
         (counts.get(project.folder_id) ?? 0) + 1,
       );
+      if (project.image_url && !featuredByFolder.has(project.folder_id)) {
+        featuredByFolder.set(project.folder_id, project);
+      }
     });
 
     return {
       error: "",
       folders: folderRows.map((folder) =>
-        mapFolder(folder, counts.get(folder.id) ?? 0),
+        mapFolder(
+          folder,
+          counts.get(folder.id) ?? 0,
+          featuredByFolder.get(folder.id),
+        ),
       ),
       projects: projectRows.flatMap((project) => {
         const folderSlug = folderSlugById.get(project.folder_id);

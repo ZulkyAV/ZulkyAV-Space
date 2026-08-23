@@ -1,7 +1,6 @@
 import "server-only";
 
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
-import { profile as mockProfile } from "@/data/mock-data";
 import type { PortfolioProfile, SocialLink } from "@/types/profile";
 
 type ProfileRow = {
@@ -19,18 +18,16 @@ type ProfileRow = {
 
 const fallbackProfile: PortfolioProfile = {
   id: "",
-  name: mockProfile.name,
-  bio: mockProfile.about,
+  name: "ZulkyAV",
+  bio: "",
   avatarUrl: null,
   avatarPublicId: null,
-  headline: "Building a quieter, more useful way to notice progress.",
-  intro: mockProfile.intro,
-  location: "Open to thoughtful collaborations",
-  about: mockProfile.about,
-  socials: mockProfile.socials.filter(
-    (social) =>
-      social.href.startsWith("https://") || social.href.startsWith("http://"),
-  ),
+  headline: "",
+  intro:
+    "Tempat gw keep progress, nyimpen ide, dan dokumentasiin hal-hal yang lagi gw build pelan-pelan.",
+  location: "",
+  about: "",
+  socials: [],
 };
 
 function readSocialLinks(value: unknown): SocialLink[] {

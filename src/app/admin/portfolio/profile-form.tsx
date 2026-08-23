@@ -21,7 +21,7 @@ function socialUrl(profile: PortfolioProfile, label: string) {
 }
 
 const inputClassName =
-  "mt-2 w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm text-neutral-900 outline-none transition focus:border-primary-500 focus:ring-2 focus:ring-primary-100";
+  "mt-2 w-full rounded-xl border border-white/15 bg-[#14141A] px-4 py-3 text-sm text-neutral-100 outline-none transition focus:border-primary-500 focus:ring-2 focus:ring-primary-100";
 
 export function PortfolioForm({ profile }: { profile: PortfolioProfile }) {
   const [state, formAction, pending] = useActionState(
@@ -31,16 +31,16 @@ export function PortfolioForm({ profile }: { profile: PortfolioProfile }) {
 
   return (
     <form action={formAction} className="space-y-8">
-      <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm sm:p-8">
+      <div className="rounded-2xl border border-white/10 bg-[#14141A] p-6 shadow-sm sm:p-8">
         <div className="mb-6">
-          <h2 className="text-lg font-bold text-neutral-900">Profile content</h2>
-          <p className="mt-1 text-sm text-neutral-500">
+          <h2 className="text-lg font-bold text-neutral-100">Profile content</h2>
+          <p className="mt-1 text-sm text-neutral-400">
             These fields appear on the public Portfolio page.
           </p>
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2">
-          <label className="text-sm font-semibold text-neutral-700">
+          <label className="text-sm font-semibold text-neutral-300">
             Name
             <input
               name="name"
@@ -51,7 +51,7 @@ export function PortfolioForm({ profile }: { profile: PortfolioProfile }) {
             />
           </label>
 
-          <label className="text-sm font-semibold text-neutral-700">
+          <label className="text-sm font-semibold text-neutral-300">
             Location / availability
             <input
               name="location"
@@ -62,7 +62,7 @@ export function PortfolioForm({ profile }: { profile: PortfolioProfile }) {
           </label>
         </div>
 
-        <label className="mt-6 block text-sm font-semibold text-neutral-700">
+        <label className="mt-6 block text-sm font-semibold text-neutral-300">
           Headline
           <input
             name="headline"
@@ -73,7 +73,7 @@ export function PortfolioForm({ profile }: { profile: PortfolioProfile }) {
           />
         </label>
 
-        <label className="mt-6 block text-sm font-semibold text-neutral-700">
+        <label className="mt-6 block text-sm font-semibold text-neutral-300">
           Intro
           <textarea
             name="intro"
@@ -85,7 +85,7 @@ export function PortfolioForm({ profile }: { profile: PortfolioProfile }) {
           />
         </label>
 
-        <label className="mt-6 block text-sm font-semibold text-neutral-700">
+        <label className="mt-6 block text-sm font-semibold text-neutral-300">
           About
           <textarea
             name="about"
@@ -97,7 +97,7 @@ export function PortfolioForm({ profile }: { profile: PortfolioProfile }) {
           />
         </label>
 
-        <label className="mt-6 block text-sm font-semibold text-neutral-700">
+        <label className="mt-6 block text-sm font-semibold text-neutral-300">
           Short bio
           <textarea
             name="bio"
@@ -116,14 +116,14 @@ export function PortfolioForm({ profile }: { profile: PortfolioProfile }) {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm sm:p-8">
-        <h2 className="text-lg font-bold text-neutral-900">Social links</h2>
-        <p className="mt-1 text-sm text-neutral-500">
+      <div className="rounded-2xl border border-white/10 bg-[#14141A] p-6 shadow-sm sm:p-8">
+        <h2 className="text-lg font-bold text-neutral-100">Social links</h2>
+        <p className="mt-1 text-sm text-neutral-400">
           Leave a field empty to hide that link publicly.
         </p>
 
         <div className="mt-6 grid gap-6">
-          <label className="text-sm font-semibold text-neutral-700">
+          <label className="text-sm font-semibold text-neutral-300">
             GitHub URL
             <input
               name="githubUrl"
@@ -135,7 +135,7 @@ export function PortfolioForm({ profile }: { profile: PortfolioProfile }) {
             />
           </label>
 
-          <label className="text-sm font-semibold text-neutral-700">
+          <label className="text-sm font-semibold text-neutral-300">
             Instagram URL
             <input
               name="instagramUrl"
@@ -147,7 +147,7 @@ export function PortfolioForm({ profile }: { profile: PortfolioProfile }) {
             />
           </label>
 
-          <label className="text-sm font-semibold text-neutral-700">
+          <label className="text-sm font-semibold text-neutral-300">
             LinkedIn URL
             <input
               name="linkedinUrl"
@@ -177,7 +177,7 @@ export function PortfolioForm({ profile }: { profile: PortfolioProfile }) {
       <button
         type="submit"
         disabled={pending}
-        className="rounded-xl bg-neutral-900 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-60"
+        className="rounded-xl bg-primary-700 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {pending ? "Saving..." : "Save portfolio"}
       </button>

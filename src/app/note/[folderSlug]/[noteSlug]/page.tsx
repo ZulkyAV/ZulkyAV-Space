@@ -21,20 +21,20 @@ export default async function NoteDetailPage({
     <article className="mx-auto max-w-3xl px-5 py-16 lg:px-8 lg:py-24">
       <Link
         href={`/note/${folder.slug}`}
-        className="text-sm font-semibold text-primary-700"
+        className="text-sm font-semibold text-primary-300"
       >
         ← {folder.name}
       </Link>
-      <header className="mt-12 border-b border-neutral-200 pb-10">
+      <header className="mt-12 border-b border-white/10 pb-10">
         <Eyebrow>
           {note.date} · {note.readTime}
         </Eyebrow>
-        <h1 className="text-4xl font-bold leading-tight tracking-tight text-neutral-950 sm:text-5xl">
+        <h1 className="text-4xl font-bold leading-tight tracking-tight text-neutral-50 sm:text-5xl">
           {note.title}
         </h1>
         <div className="mt-5 flex flex-wrap gap-2">
           {note.tags.map((tag) => (
-            <span key={tag} className="font-mono text-xs text-primary-600">
+            <span key={tag} className="font-mono text-xs text-primary-400">
               #{tag}
             </span>
           ))}
@@ -44,14 +44,14 @@ export default async function NoteDetailPage({
         {note.content.map((paragraph, index) => (
           <p
             key={`${index}-${paragraph.slice(0, 24)}`}
-            className="mb-6 whitespace-pre-wrap text-lg leading-8 text-neutral-700"
+            className="mb-6 whitespace-pre-wrap text-lg leading-8 text-neutral-300"
           >
             {paragraph}
           </p>
         ))}
       </div>
-      <div className="mt-16 border-t border-neutral-200 pt-8">
-        <Link href="/note" className="text-sm font-semibold text-primary-700">
+      <div className="mt-16 border-t border-white/10 pt-8">
+        <Link href="/note" className="text-sm font-semibold text-primary-300">
           Browse all notes →
         </Link>
       </div>

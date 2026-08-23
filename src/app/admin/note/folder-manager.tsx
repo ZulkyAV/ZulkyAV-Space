@@ -17,13 +17,13 @@ import {
 const initialState: NoteFolderFormState = { status: "idle", message: "" };
 
 const inputClassName =
-  "mt-2 w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm text-neutral-900 outline-none transition focus:border-primary-500 focus:ring-2 focus:ring-primary-100";
+  "mt-2 w-full rounded-xl border border-white/15 bg-[#14141A] px-4 py-3 text-sm text-neutral-100 outline-none transition focus:border-primary-500 focus:ring-2 focus:ring-primary-100";
 
 const statusClasses: Record<NoteFolderStatus, string> = {
   published: "bg-success-50 text-success-700",
   maintenance: "bg-warning-50 text-warning-700",
-  draft: "bg-neutral-100 text-neutral-600",
-  archived: "bg-neutral-900 text-white",
+  draft: "bg-[#1B1B23] text-neutral-400",
+  archived: "bg-primary-700 text-white",
 };
 
 function slugify(value: string) {
@@ -64,13 +64,13 @@ function CreateFolderForm() {
 
   return (
     <details className="rounded-2xl border border-primary-200 bg-primary-50/40 p-5 sm:p-6">
-      <summary className="cursor-pointer list-none font-semibold text-primary-800">
+      <summary className="cursor-pointer list-none font-semibold text-primary-200">
         <span className="mr-2 text-lg">＋</span> Add Note folder
       </summary>
 
       <form action={formAction} className="mt-6 space-y-5">
         <div className="grid gap-5 sm:grid-cols-2">
-          <label className="text-sm font-semibold text-neutral-700">
+          <label className="text-sm font-semibold text-neutral-300">
             Folder name
             <input
               name="name"
@@ -87,7 +87,7 @@ function CreateFolderForm() {
             />
           </label>
 
-          <label className="text-sm font-semibold text-neutral-700">
+          <label className="text-sm font-semibold text-neutral-300">
             Slug
             <input
               name="slug"
@@ -105,7 +105,7 @@ function CreateFolderForm() {
           </label>
         </div>
 
-        <label className="block text-sm font-semibold text-neutral-700">
+        <label className="block text-sm font-semibold text-neutral-300">
           Description
           <textarea
             name="description"
@@ -119,7 +119,7 @@ function CreateFolderForm() {
         <div className="grid gap-5 sm:grid-cols-3">
           <SelectField name="accent" label="Accent" defaultValue="blue" />
           <SelectField name="status" label="Status" defaultValue="draft" />
-          <label className="text-sm font-semibold text-neutral-700">
+          <label className="text-sm font-semibold text-neutral-300">
             Sort order
             <input
               name="sortOrder"
@@ -138,7 +138,7 @@ function CreateFolderForm() {
         <button
           type="submit"
           disabled={pending}
-          className="rounded-xl bg-neutral-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-60"
+          className="rounded-xl bg-primary-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {pending ? "Creating..." : "Create folder"}
         </button>
@@ -159,7 +159,7 @@ function SelectField({
   const values = name === "accent" ? noteFolderAccents : noteFolderStatuses;
 
   return (
-    <label className="text-sm font-semibold text-neutral-700">
+    <label className="text-sm font-semibold text-neutral-300">
       {label}
       <select name={name} defaultValue={defaultValue} className={inputClassName}>
         {values.map((value) => (
@@ -183,16 +183,16 @@ function FolderEditor({ folder }: { folder: AdminNoteFolder }) {
   );
 
   return (
-    <article className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm sm:p-6">
+    <article className="rounded-2xl border border-white/10 bg-[#14141A] p-5 shadow-sm sm:p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h2 className="font-bold text-neutral-900">{folder.name}</h2>
-          <p className="mt-1 font-mono text-[11px] text-neutral-400">
+          <h2 className="font-bold text-neutral-100">{folder.name}</h2>
+          <p className="mt-1 font-mono text-[11px] text-neutral-500">
             /note/{folder.slug}
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="rounded-full bg-neutral-100 px-3 py-1 text-xs font-semibold text-neutral-600">
+          <span className="rounded-full bg-[#1B1B23] px-3 py-1 text-xs font-semibold text-neutral-400">
             {folder.noteCount} {folder.noteCount === 1 ? "article" : "articles"}
           </span>
           <span
@@ -203,8 +203,8 @@ function FolderEditor({ folder }: { folder: AdminNoteFolder }) {
         </div>
       </div>
 
-      <details className="mt-5 border-t border-neutral-200 pt-5">
-        <summary className="cursor-pointer text-sm font-semibold text-primary-700">
+      <details className="mt-5 border-t border-white/10 pt-5">
+        <summary className="cursor-pointer text-sm font-semibold text-primary-300">
           Edit folder
         </summary>
 
@@ -212,7 +212,7 @@ function FolderEditor({ folder }: { folder: AdminNoteFolder }) {
           <input type="hidden" name="id" value={folder.id} />
 
           <div className="grid gap-5 sm:grid-cols-2">
-            <label className="text-sm font-semibold text-neutral-700">
+            <label className="text-sm font-semibold text-neutral-300">
               Folder name
               <input
                 name="name"
@@ -222,7 +222,7 @@ function FolderEditor({ folder }: { folder: AdminNoteFolder }) {
                 className={inputClassName}
               />
             </label>
-            <label className="text-sm font-semibold text-neutral-700">
+            <label className="text-sm font-semibold text-neutral-300">
               Slug
               <input
                 name="slug"
@@ -235,7 +235,7 @@ function FolderEditor({ folder }: { folder: AdminNoteFolder }) {
             </label>
           </div>
 
-          <label className="block text-sm font-semibold text-neutral-700">
+          <label className="block text-sm font-semibold text-neutral-300">
             Description
             <textarea
               name="description"
@@ -257,7 +257,7 @@ function FolderEditor({ folder }: { folder: AdminNoteFolder }) {
               label="Status"
               defaultValue={folder.status}
             />
-            <label className="text-sm font-semibold text-neutral-700">
+            <label className="text-sm font-semibold text-neutral-300">
               Sort order
               <input
                 name="sortOrder"
@@ -276,23 +276,23 @@ function FolderEditor({ folder }: { folder: AdminNoteFolder }) {
           <button
             type="submit"
             disabled={updating}
-            className="rounded-xl bg-neutral-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-xl bg-primary-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {updating ? "Saving..." : "Save changes"}
           </button>
         </form>
 
         {folder.status !== "archived" ? (
-          <form action={archiveAction} className="mt-5 border-t border-neutral-200 pt-5">
+          <form action={archiveAction} className="mt-5 border-t border-white/10 pt-5">
             <input type="hidden" name="id" value={folder.id} />
-            <p className="mb-3 text-xs leading-5 text-neutral-500">
+            <p className="mb-3 text-xs leading-5 text-neutral-400">
               Archiving hides this folder publicly without deleting its articles.
             </p>
             <ResultMessage state={archiveState} />
             <button
               type="submit"
               disabled={archiving}
-              className="mt-3 rounded-xl border border-error-200 bg-white px-4 py-2.5 text-sm font-semibold text-error-700 transition hover:bg-error-50 disabled:cursor-not-allowed disabled:opacity-60"
+              className="mt-3 rounded-xl border border-error-200 bg-[#14141A] px-4 py-2.5 text-sm font-semibold text-error-700 transition hover:bg-error-50 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {archiving ? "Archiving..." : "Archive folder"}
             </button>
@@ -334,9 +334,9 @@ export function NoteFolderManager({
         {folders.length ? (
           folders.map((folder) => <FolderEditor key={folder.id} folder={folder} />)
         ) : loadError ? null : (
-          <div className="rounded-2xl border border-dashed border-neutral-300 bg-white p-10 text-center">
-            <p className="font-semibold text-neutral-800">No Note folders yet.</p>
-            <p className="mt-2 text-sm text-neutral-500">
+          <div className="rounded-2xl border border-dashed border-white/15 bg-[#14141A] p-10 text-center">
+            <p className="font-semibold text-neutral-200">No Note folders yet.</p>
+            <p className="mt-2 text-sm text-neutral-400">
               Add the first folder using the form above.
             </p>
           </div>
@@ -348,11 +348,11 @@ export function NoteFolderManager({
 
 function Summary({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
-      <p className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+    <div className="rounded-2xl border border-white/10 bg-[#14141A] p-5 shadow-sm">
+      <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
         {label}
       </p>
-      <p className="mt-2 text-2xl font-bold text-neutral-900">{value}</p>
+      <p className="mt-2 text-2xl font-bold text-neutral-100">{value}</p>
     </div>
   );
 }
