@@ -11,7 +11,7 @@ import type { AdminNoteFolder } from "@/types/note-admin";
 
 const initialState: NoteArticleFormState = { status: "idle", message: "" };
 const inputClassName =
-  "mt-2 w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm text-neutral-900 outline-none transition focus:border-primary-500 focus:ring-2 focus:ring-primary-100";
+  "mt-2 w-full rounded-xl border border-white/15 bg-[#14141A] px-4 py-3 text-sm text-neutral-100 outline-none transition focus:border-primary-500 focus:ring-2 focus:ring-primary-100";
 
 function slugify(value: string) {
   return value
@@ -46,7 +46,7 @@ function FolderSelect({
   defaultValue?: string | null;
 }) {
   return (
-    <label className="text-sm font-semibold text-neutral-700">
+    <label className="text-sm font-semibold text-neutral-300">
       Folder
       <select
         name="folderId"
@@ -83,7 +83,7 @@ function ArticleFields({
       {article ? <input type="hidden" name="id" value={article.id} /> : null}
 
       <div className="grid gap-5 sm:grid-cols-2">
-        <label className="text-sm font-semibold text-neutral-700">
+        <label className="text-sm font-semibold text-neutral-300">
           Article title
           <input
             name="title"
@@ -100,7 +100,7 @@ function ArticleFields({
           />
         </label>
 
-        <label className="text-sm font-semibold text-neutral-700">
+        <label className="text-sm font-semibold text-neutral-300">
           Slug
           <input
             name="slug"
@@ -120,7 +120,7 @@ function ArticleFields({
 
       <div className="grid gap-5 sm:grid-cols-2">
         <FolderSelect folders={folders} defaultValue={article?.folderId} />
-        <label className="text-sm font-semibold text-neutral-700">
+        <label className="text-sm font-semibold text-neutral-300">
           Publication
           <select
             name="publication"
@@ -133,7 +133,7 @@ function ArticleFields({
         </label>
       </div>
 
-      <label className="block text-sm font-semibold text-neutral-700">
+      <label className="block text-sm font-semibold text-neutral-300">
         Excerpt
         <textarea
           name="excerpt"
@@ -146,7 +146,7 @@ function ArticleFields({
         />
       </label>
 
-      <label className="block text-sm font-semibold text-neutral-700">
+      <label className="block text-sm font-semibold text-neutral-300">
         Article content
         <textarea
           name="content"
@@ -160,7 +160,7 @@ function ArticleFields({
       </label>
 
       <div className="grid gap-5 sm:grid-cols-3">
-        <label className="text-sm font-semibold text-neutral-700 sm:col-span-2">
+        <label className="text-sm font-semibold text-neutral-300 sm:col-span-2">
           Tags
           <input
             name="tags"
@@ -169,12 +169,12 @@ function ArticleFields({
             placeholder="process, making, diary"
             className={inputClassName}
           />
-          <span className="mt-2 block text-xs font-normal text-neutral-400">
+          <span className="mt-2 block text-xs font-normal text-neutral-500">
             Separate tags with commas. Maximum 10 tags.
           </span>
         </label>
 
-        <label className="text-sm font-semibold text-neutral-700">
+        <label className="text-sm font-semibold text-neutral-300">
           Read time
           <input
             name="readTime"
@@ -186,7 +186,7 @@ function ArticleFields({
         </label>
       </div>
 
-      <label className="block max-w-xs text-sm font-semibold text-neutral-700">
+      <label className="block max-w-xs text-sm font-semibold text-neutral-300">
         Sort order
         <input
           name="sortOrder"
@@ -219,7 +219,7 @@ function CreateArticleForm({ folders }: { folders: AdminNoteFolder[] }) {
 
   return (
     <details className="rounded-2xl border border-primary-200 bg-primary-50/40 p-5 sm:p-6">
-      <summary className="cursor-pointer list-none font-semibold text-primary-800">
+      <summary className="cursor-pointer list-none font-semibold text-primary-200">
         <span className="mr-2 text-lg">＋</span> Add Note article
       </summary>
       <form action={formAction} className="mt-6 space-y-5">
@@ -228,7 +228,7 @@ function CreateArticleForm({ folders }: { folders: AdminNoteFolder[] }) {
         <button
           type="submit"
           disabled={pending}
-          className="rounded-xl bg-neutral-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-60"
+          className="rounded-xl bg-primary-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {pending ? "Creating..." : "Create article"}
         </button>
@@ -251,23 +251,23 @@ function ArticleEditor({
   const folder = folders.find((entry) => entry.id === article.folderId);
 
   return (
-    <article className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm sm:p-6">
+    <article className="rounded-2xl border border-white/10 bg-[#14141A] p-5 shadow-sm sm:p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h3 className="font-bold text-neutral-900">{article.title}</h3>
-          <p className="mt-1 font-mono text-[11px] text-neutral-400">
+          <h3 className="font-bold text-neutral-100">{article.title}</h3>
+          <p className="mt-1 font-mono text-[11px] text-neutral-500">
             {folder ? `/note/${folder.slug}/${article.slug}` : article.slug}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <span className="rounded-full bg-neutral-100 px-3 py-1 text-xs font-semibold text-neutral-600">
+          <span className="rounded-full bg-[#1B1B23] px-3 py-1 text-xs font-semibold text-neutral-400">
             {folder?.name ?? "No folder"}
           </span>
           <span
             className={`rounded-full px-3 py-1 text-xs font-semibold ${
               article.published
                 ? "bg-success-50 text-success-700"
-                : "bg-neutral-100 text-neutral-600"
+                : "bg-[#1B1B23] text-neutral-400"
             }`}
           >
             {article.published ? "published" : "draft"}
@@ -275,13 +275,13 @@ function ArticleEditor({
         </div>
       </div>
 
-      <p className="mt-3 text-sm leading-6 text-neutral-500">{article.excerpt}</p>
-      <p className="mt-3 font-mono text-[10px] uppercase tracking-wider text-neutral-400">
+      <p className="mt-3 text-sm leading-6 text-neutral-400">{article.excerpt}</p>
+      <p className="mt-3 font-mono text-[10px] uppercase tracking-wider text-neutral-500">
         Updated {article.updatedAt.slice(0, 10)}
       </p>
 
-      <details className="mt-5 border-t border-neutral-200 pt-5">
-        <summary className="cursor-pointer text-sm font-semibold text-primary-700">
+      <details className="mt-5 border-t border-white/10 pt-5">
+        <summary className="cursor-pointer text-sm font-semibold text-primary-300">
           Edit article
         </summary>
         <form action={formAction} className="mt-5 space-y-5">
@@ -290,7 +290,7 @@ function ArticleEditor({
           <button
             type="submit"
             disabled={pending}
-            className="rounded-xl bg-neutral-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-xl bg-primary-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {pending ? "Saving..." : "Save article"}
           </button>
@@ -330,23 +330,23 @@ export function NoteArticleManager({
   }, [articles, folderFilter, publicationFilter, query]);
 
   return (
-    <section className="space-y-7 border-t border-neutral-200 pt-10">
+    <section className="space-y-7 border-t border-white/10 pt-10">
       <div>
-        <p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-primary-600">
+        <p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-primary-400">
           Article manager
         </p>
-        <h2 className="mt-2 text-2xl font-bold text-neutral-950">
+        <h2 className="mt-2 text-2xl font-bold text-neutral-50">
           Articles ({articles.length})
         </h2>
-        <p className="mt-2 text-sm leading-6 text-neutral-500">
+        <p className="mt-2 text-sm leading-6 text-neutral-400">
           Draft, publish, and organize the writing inside each Note folder.
         </p>
       </div>
 
       <CreateArticleForm folders={folders} />
 
-      <div className="grid gap-4 rounded-2xl border border-neutral-200 bg-white p-4 sm:grid-cols-3">
-        <label className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+      <div className="grid gap-4 rounded-2xl border border-white/10 bg-[#14141A] p-4 sm:grid-cols-3">
+        <label className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
           Search
           <input
             type="search"
@@ -356,7 +356,7 @@ export function NoteArticleManager({
             className={inputClassName}
           />
         </label>
-        <label className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+        <label className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
           Folder
           <select
             value={folderFilter}
@@ -371,7 +371,7 @@ export function NoteArticleManager({
             ))}
           </select>
         </label>
-        <label className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+        <label className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
           Status
           <select
             value={publicationFilter}
@@ -397,9 +397,9 @@ export function NoteArticleManager({
             <ArticleEditor key={article.id} article={article} folders={folders} />
           ))
         ) : loadError ? null : (
-          <div className="rounded-2xl border border-dashed border-neutral-300 bg-white p-10 text-center">
-            <p className="font-semibold text-neutral-800">No matching articles.</p>
-            <p className="mt-2 text-sm text-neutral-500">
+          <div className="rounded-2xl border border-dashed border-white/15 bg-[#14141A] p-10 text-center">
+            <p className="font-semibold text-neutral-200">No matching articles.</p>
+            <p className="mt-2 text-sm text-neutral-400">
               Add an article or change the filters above.
             </p>
           </div>

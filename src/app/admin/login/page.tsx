@@ -10,22 +10,22 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <Eyebrow>Private zone</Eyebrow>
-          <h1 className="text-3xl font-bold text-neutral-950">Welcome back.</h1>
-          <p className="mt-3 text-sm text-neutral-500">
+          <h1 className="text-3xl font-bold text-neutral-50">Welcome back.</h1>
+          <p className="mt-3 text-sm text-neutral-400">
             Sign in with your private credentials to continue.
           </p>
         </div>
 
-        <div className="rounded-2xl border border-neutral-200 bg-white p-7 shadow-sm">
+        <div className="rounded-2xl border border-white/10 bg-[#14141A] p-7 shadow-sm">
           <AdminLoginForm />
-          <p className="mt-6 text-center text-xs leading-5 text-neutral-400">
+          <p className="mt-6 text-center text-xs leading-5 text-neutral-500">
             Protected by password and one-time email verification.
           </p>
         </div>
 
         <Link
           href="/"
-          className="mt-6 block text-center text-sm font-semibold text-primary-700 hover:text-primary-900"
+          className="mt-6 block text-center text-sm font-semibold text-primary-300 hover:text-primary-200"
         >
           ← Back to public space
         </Link>

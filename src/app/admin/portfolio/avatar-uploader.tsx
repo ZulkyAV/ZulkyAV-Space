@@ -102,26 +102,26 @@ export function AvatarUploader({
 
   return (
     <div>
-      <p className="text-sm font-semibold text-neutral-700">Profile avatar</p>
+      <p className="text-sm font-semibold text-neutral-300">Profile avatar</p>
 
       <input type="hidden" name="avatarUrl" value={avatarUrl} />
       <input type="hidden" name="avatarPublicId" value={avatarPublicId} />
 
-      <div className="mt-3 flex flex-col gap-4 rounded-2xl border border-dashed border-neutral-300 bg-neutral-50 p-5 sm:flex-row sm:items-center">
+      <div className="mt-3 flex flex-col gap-4 rounded-2xl border border-dashed border-white/15 bg-[#101015] p-5 sm:flex-row sm:items-center">
         {avatarUrl ? (
           <img
             src={avatarUrl}
             alt="Avatar preview"
-            className="h-24 w-24 rounded-2xl border border-neutral-200 bg-white object-cover"
+            className="h-24 w-24 rounded-2xl border border-white/10 bg-[#14141A] object-cover"
           />
         ) : (
-          <div className="flex h-24 w-24 items-center justify-center rounded-2xl border border-neutral-200 bg-white text-xs font-semibold text-neutral-400">
+          <div className="flex h-24 w-24 items-center justify-center rounded-2xl border border-white/10 bg-[#14141A] text-xs font-semibold text-neutral-500">
             No image
           </div>
         )}
 
         <div className="flex-1">
-          <p className="text-sm leading-6 text-neutral-500">
+          <p className="text-sm leading-6 text-neutral-400">
             JPG, PNG, or WebP. Maximum file size 5 MB.
           </p>
 
@@ -145,7 +145,7 @@ export function AvatarUploader({
                   setMessage("Avatar removed. Save the portfolio to apply it.");
                   if (inputRef.current) inputRef.current.value = "";
                 }}
-                className="rounded-xl border border-neutral-300 bg-white px-4 py-2 text-sm font-semibold text-neutral-700 hover:border-error-300 hover:text-error-700 disabled:cursor-not-allowed disabled:opacity-60"
+                className="rounded-xl border border-white/15 bg-[#14141A] px-4 py-2 text-sm font-semibold text-neutral-300 hover:border-error-300 hover:text-error-700 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 Remove
               </button>
@@ -165,7 +165,7 @@ export function AvatarUploader({
           />
 
           {message ? (
-            <p className="mt-3 text-xs leading-5 text-neutral-600" role="status">
+            <p className="mt-3 text-xs leading-5 text-neutral-400" role="status">
               {message}
             </p>
           ) : null}

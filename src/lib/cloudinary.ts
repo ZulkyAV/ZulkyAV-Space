@@ -25,3 +25,21 @@ export function getCloudinary() {
     apiSecret,
   };
 }
+
+export async function destroyManagedImage(
+  publicId: string | null | undefined,
+  scope: "avatar" | "project" | "product",
+) {
+  const managedPrefix = `zulkyav-space/${scope}s/`;
+  if (!publicId?.startsWith(managedPrefix)) return;
+
+  try {
+    const { cloudinary } = getCloudinary();
+    await cloudinary.uploader.destroy(publicId, {
+      invalidate: true,
+      resource_type: "image",
+    });
+  } catch {
+    // The database remains authoritative if remote cleanup is unavailable.
+  }
+}

@@ -37,23 +37,23 @@ export function AdminLoginForm() {
     return (
       <form action={otpAction} className="space-y-5">
         <div className="rounded-xl border border-primary-100 bg-primary-50 p-4">
-          <p className="text-sm font-semibold text-primary-900">
+          <p className="text-sm font-semibold text-primary-200">
             Check your email
           </p>
-          <p className="mt-1 text-sm leading-6 text-primary-700">
+          <p className="mt-1 text-sm leading-6 text-primary-300">
             {credentialState.message ??
               "Kode verifikasi sudah dikirim ke email terdaftar."}
           </p>
         </div>
 
         <label className="block">
-          <span className="mb-2 block text-sm font-semibold text-neutral-700">
+          <span className="mb-2 block text-sm font-semibold text-neutral-300">
             Authentication code
           </span>
           <input
             autoComplete="one-time-code"
             autoFocus
-            className="w-full rounded-lg border border-neutral-300 px-4 py-3 text-center font-mono text-lg tracking-[0.35em] outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+            className="w-full rounded-lg border border-white/15 px-4 py-3 text-center font-mono text-lg tracking-[0.35em] outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
             inputMode="numeric"
             maxLength={6}
             name="token"
@@ -73,7 +73,7 @@ export function AdminLoginForm() {
         )}
 
         <button
-          className="w-full rounded-lg bg-neutral-900 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full rounded-lg bg-primary-700 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-60"
           disabled={otpPending}
           type="submit"
         >
@@ -81,7 +81,7 @@ export function AdminLoginForm() {
         </button>
 
         <button
-          className="w-full text-center text-xs font-semibold text-neutral-500 hover:text-primary-700"
+          className="w-full text-center text-xs font-semibold text-neutral-400 hover:text-primary-300"
           onClick={() => setStep("credentials")}
           type="button"
         >
@@ -98,12 +98,12 @@ export function AdminLoginForm() {
   return (
     <form action={credentialAction} className="space-y-5">
       <label className="block">
-        <span className="mb-2 block text-sm font-semibold text-neutral-700">
+        <span className="mb-2 block text-sm font-semibold text-neutral-300">
           Username
         </span>
         <input
           autoComplete="username"
-          className="w-full rounded-lg border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+          className="w-full rounded-lg border border-white/15 px-4 py-3 text-sm outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
           name="username"
           placeholder="your username"
           required
@@ -111,12 +111,12 @@ export function AdminLoginForm() {
       </label>
 
       <label className="block">
-        <span className="mb-2 block text-sm font-semibold text-neutral-700">
+        <span className="mb-2 block text-sm font-semibold text-neutral-300">
           Password
         </span>
         <input
           autoComplete="current-password"
-          className="w-full rounded-lg border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+          className="w-full rounded-lg border border-white/15 px-4 py-3 text-sm outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
           name="password"
           placeholder="••••••••"
           required
@@ -134,7 +134,7 @@ export function AdminLoginForm() {
       )}
 
       <button
-        className="w-full rounded-lg bg-neutral-900 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-60"
+        className="w-full rounded-lg bg-primary-700 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-60"
         disabled={credentialPending}
         type="submit"
       >

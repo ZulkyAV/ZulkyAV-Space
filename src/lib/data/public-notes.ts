@@ -1,13 +1,6 @@
 import "server-only";
 
-import {
-  getPublicFolders,
-  noteFolders as mockFolders,
-  notes as mockNotes,
-  type Folder,
-  type FolderStatus,
-  type Note,
-} from "@/data/mock-data";
+import type { Folder, FolderStatus, Note } from "@/types/content";
 import { createPublicClient } from "@/lib/supabase/public";
 
 type FolderRow = {
@@ -93,23 +86,10 @@ function mapFolder(row: FolderRow, count: number): Folder {
   };
 }
 
-function getMockIndex() {
-  const folders = getPublicFolders(mockFolders);
-  const visibleFolderSlugs = new Set(
-    folders
-      .filter((folder) => folder.status === "published")
-      .map((folder) => folder.slug),
-  );
-
-  return {
-    folders,
-    notes: mockNotes.filter((note) => visibleFolderSlugs.has(note.folderSlug)),
-  };
-}
-
 export async function getPublicNoteIndex(): Promise<{
   folders: Folder[];
   notes: Note[];
+  error?: string;
 }> {
   try {
     const supabase = createPublicClient();
@@ -162,7 +142,11 @@ export async function getPublicNoteIndex(): Promise<{
       }),
     };
   } catch {
-    return getMockIndex();
+    return {
+      folders: [],
+      notes: [],
+      error: "Note data is temporarily unavailable.",
+    };
   }
 }
 
@@ -206,20 +190,7 @@ export async function getPublicNoteFolder(
       notes,
     };
   } catch {
-    const folder = mockFolders.find((entry) => entry.slug === folderSlug);
-    if (!folder || !["published", "maintenance"].includes(folder.status)) {
-      return null;
-    }
-
-    const notes =
-      folder.status === "published"
-        ? mockNotes.filter((note) => note.folderSlug === folder.slug)
-        : [];
-
-    return {
-      folder: { ...folder, count: notes.length },
-      notes,
-    };
+    return null;
   }
 }
 
@@ -257,14 +228,6 @@ export async function getPublicNoteArticle(
       note: mapNote(noteData as NoteRow, folderRow.slug),
     };
   } catch {
-    const folder = mockFolders.find(
-      (entry) => entry.slug === folderSlug && entry.status === "published",
-    );
-    const note = mockNotes.find(
-      (entry) =>
-        entry.folderSlug === folderSlug && entry.slug === noteSlug,
-    );
-
-    return folder && note ? { folder, note } : null;
+    return null;
   }
 }

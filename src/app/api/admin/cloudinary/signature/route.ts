@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function POST() {
+export async function POST(request: Request) {
   const supabase = await createClient();
 
   const {
@@ -31,9 +31,13 @@ export async function POST() {
     );
   }
 
+  const body = (await request.json().catch(() => ({}))) as { scope?: string };
+  const scope = ["project", "product"].includes(body.scope ?? "")
+    ? body.scope
+    : "avatar";
   const { cloudinary, cloudName, apiKey, apiSecret } = getCloudinary();
   const timestamp = Math.floor(Date.now() / 1000);
-  const folder = "zulkyav-space/avatars";
+  const folder = `zulkyav-space/${scope}s`;
 
   const signature = cloudinary.utils.api_sign_request(
     {
