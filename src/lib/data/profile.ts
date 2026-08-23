@@ -9,6 +9,7 @@ type ProfileRow = {
   name: string;
   bio: string;
   avatar_url: string | null;
+  avatar_public_id: string | null;
   headline: string;
   intro: string;
   location: string;
@@ -21,6 +22,7 @@ const fallbackProfile: PortfolioProfile = {
   name: mockProfile.name,
   bio: mockProfile.about,
   avatarUrl: null,
+  avatarPublicId: null,
   headline: "Building a quieter, more useful way to notice progress.",
   intro: mockProfile.intro,
   location: "Open to thoughtful collaborations",
@@ -68,7 +70,7 @@ export async function getPortfolioProfile(): Promise<PortfolioProfile> {
     const { data, error } = await supabase
       .from("profiles")
       .select(
-        "id,name,bio,avatar_url,headline,intro,location,about,social_links",
+        "id,name,bio,avatar_url,avatar_public_id,headline,intro,location,about,social_links",
       )
       .limit(1)
       .maybeSingle<ProfileRow>();
@@ -84,6 +86,7 @@ export async function getPortfolioProfile(): Promise<PortfolioProfile> {
       name: data.name || fallbackProfile.name,
       bio: data.bio || fallbackProfile.bio,
       avatarUrl: data.avatar_url,
+      avatarPublicId: data.avatar_public_id,
       headline: data.headline || fallbackProfile.headline,
       intro: data.intro || fallbackProfile.intro,
       location: data.location || fallbackProfile.location,

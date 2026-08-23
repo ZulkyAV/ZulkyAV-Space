@@ -8,6 +8,7 @@ export type PortfolioProfile = {
   name: string;
   bio: string;
   avatarUrl: string | null;
+  avatarPublicId: string | null;
   headline: string;
   intro: string;
   location: string;

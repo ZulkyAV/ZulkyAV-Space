@@ -45,6 +45,13 @@ export default async function HomePage() {
             </div>
 
             <div className="rounded-2xl border border-neutral-200 bg-white/80 p-6 shadow-sm">
+              {profile.avatarUrl ? (
+                <img
+                  src={profile.avatarUrl}
+                  alt={profile.name}
+                  className="mb-6 aspect-square w-24 rounded-2xl object-cover"
+                />
+              ) : null}
               <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-neutral-400">
                 Currently
               </p>
