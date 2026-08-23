@@ -21,4 +21,3 @@ export function SettingsForm({ settings }: { settings: PublicStatisticsSettings 
     <button disabled={pending} className="mt-6 rounded-xl bg-primary-700 px-5 py-3 text-sm font-semibold text-white disabled:opacity-60">{pending ? "Saving..." : "Save settings"}</button>
   </form>;
 }
-

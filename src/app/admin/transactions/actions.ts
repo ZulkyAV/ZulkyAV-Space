@@ -90,4 +90,3 @@ export async function recordSale(
     ? { status: "success", message: "Sale recorded and stock updated. Stock audit log needs checking." }
     : { status: "success", message: "Sale recorded and stock updated." };
 }
-

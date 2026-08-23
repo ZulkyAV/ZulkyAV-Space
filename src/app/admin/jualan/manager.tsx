@@ -117,4 +117,3 @@ export function ShopManager({ folders, products, loadError }: { folders: AdminSh
 function Summary({ label, value }: { label: string; value: number }) {
   return <div className="rounded-2xl border border-white/10 bg-[#14141A] p-5 shadow-sm"><p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">{label}</p><p className="mt-2 text-2xl font-bold text-neutral-100">{value}</p></div>;
 }
-

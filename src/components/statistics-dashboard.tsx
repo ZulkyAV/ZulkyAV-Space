@@ -23,4 +23,3 @@ export function StatisticsDashboard({ snapshots, settings, admin = false }: { sn
     </div>
   </div>;
 }
-

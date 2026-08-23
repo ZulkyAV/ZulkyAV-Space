@@ -22,4 +22,3 @@ export async function saveStatisticsSettings(
   revalidatePath("/admin/settings"); revalidatePath("/statistics");
   return { status: "success", message: "Public statistics settings saved." };
 }
-
