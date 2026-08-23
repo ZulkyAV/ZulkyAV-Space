@@ -1,4 +1,35 @@
 import Link from "next/link";
 import { Eyebrow } from "@/components/ui";
+import { AdminLoginForm } from "./login-form";
 
-export default function AdminLoginPage() { return <div className="flex min-h-[calc(100vh-73px)] items-center justify-center px-5 py-16"><div className="w-full max-w-md"><div className="mb-8 text-center"><Eyebrow>Private zone</Eyebrow><h1 className="text-3xl font-bold text-neutral-950">Welcome back.</h1><p className="mt-3 text-sm text-neutral-500">This is a visual placeholder for the private workspace.</p></div><div className="rounded-2xl border border-neutral-200 bg-white p-7 shadow-sm"><form className="space-y-5"><label className="block"><span className="mb-2 block text-sm font-semibold text-neutral-700">Username</span><input className="w-full rounded-lg border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100" placeholder="your username" /></label><label className="block"><span className="mb-2 block text-sm font-semibold text-neutral-700">Password</span><input type="password" className="w-full rounded-lg border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100" placeholder="••••••••" /></label><label className="block"><span className="mb-2 block text-sm font-semibold text-neutral-700">Authentication code</span><input className="w-full rounded-lg border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100" placeholder="6-digit code" /></label><Link href="/admin" className="block w-full rounded-lg bg-neutral-900 px-4 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-primary-700">Enter workspace</Link></form><p className="mt-6 text-center text-xs text-neutral-400">Authentication will be connected in a later phase.</p></div><Link href="/" className="mt-6 block text-center text-sm font-semibold text-primary-700 hover:text-primary-900">← Back to public space</Link></div></div>; }
+export const dynamic = "force-dynamic";
+
+export default function AdminLoginPage() {
+  return (
+    <div className="flex min-h-[calc(100vh-73px)] items-center justify-center px-5 py-16">
+      <div className="w-full max-w-md">
+        <div className="mb-8 text-center">
+          <Eyebrow>Private zone</Eyebrow>
+          <h1 className="text-3xl font-bold text-neutral-50">Welcome back.</h1>
+          <p className="mt-3 text-sm text-neutral-400">
+            Sign in with your private credentials to continue.
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-white/10 bg-[#14141A] p-7 shadow-sm">
+          <AdminLoginForm />
+          <p className="mt-6 text-center text-xs leading-5 text-neutral-500">
+            Protected by password and one-time email verification.
+          </p>
+        </div>
+
+        <Link
+          href="/"
+          className="mt-6 block text-center text-sm font-semibold text-primary-300 hover:text-primary-200"
+        >
+          ← Back to public space
+        </Link>
+      </div>
+    </div>
+  );
+}
