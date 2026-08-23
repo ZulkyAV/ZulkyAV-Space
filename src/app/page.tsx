@@ -1,11 +1,160 @@
 import Link from "next/link";
-import { Eyebrow, NoteCard, ProjectCard, ProductCard, SectionHeading } from "@/components/ui";
-import { notes, products, profile, projects } from "@/data/mock-data";
+import {
+  Eyebrow,
+  NoteCard,
+  ProductCard,
+  ProjectCard,
+  SectionHeading,
+} from "@/components/ui";
+import { notes, products, projects } from "@/data/mock-data";
+import { getPortfolioProfile } from "@/lib/data/profile";
 
-export default function HomePage() { return <>
-  <section className="grid-paper border-b border-neutral-200"><div className="mx-auto max-w-6xl px-5 py-20 lg:px-8 lg:py-28"><div className="grid items-end gap-12 lg:grid-cols-[1.3fr_.7fr]"><div><Eyebrow>Personal archive / 001</Eyebrow><h1 className="max-w-3xl text-5xl font-bold leading-[1.05] tracking-tight text-neutral-950 sm:text-7xl">Ideas worth <span className="text-primary-600">making</span> room for.</h1><p className="mt-7 max-w-xl text-lg leading-8 text-neutral-500">{profile.intro}</p><div className="mt-9 flex flex-wrap gap-3"><Link href="/project" className="rounded-full bg-neutral-900 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-700">Explore projects <span className="ml-2">→</span></Link><Link href="/note" className="rounded-full border border-neutral-300 bg-white px-5 py-3 text-sm font-semibold text-neutral-700 transition-colors hover:border-primary-400 hover:text-primary-700">Read the notes</Link></div></div><div className="rounded-2xl border border-neutral-200 bg-white/80 p-6 shadow-sm"><p className="font-mono text-[10px] uppercase tracking-[0.18em] text-neutral-400">Currently</p><p className="mt-4 text-xl font-semibold leading-8 text-neutral-800">Building a quieter, more useful way to notice progress.</p><div className="mt-8 flex items-center gap-3 border-t border-neutral-200 pt-5"><span className="h-2 w-2 rounded-full bg-success-500" /><span className="text-sm text-neutral-500">Open to thoughtful collaborations</span></div></div></div></div></section>
-  <section className="mx-auto max-w-6xl px-5 py-20 lg:px-8"><SectionHeading title="A little about" description={profile.about} href="/note" linkLabel="More notes" /><div className="grid gap-5 sm:grid-cols-3"><div className="rounded-2xl bg-primary-950 p-6 text-white"><p className="font-mono text-xs text-primary-300">01 / approach</p><p className="mt-12 text-lg font-semibold leading-7">Stay curious. Make it tangible.</p></div><div className="rounded-2xl bg-accent-100 p-6 text-neutral-900"><p className="font-mono text-xs text-accent-700">02 / preference</p><p className="mt-12 text-lg font-semibold leading-7">Fewer things, considered well.</p></div><div className="rounded-2xl bg-neutral-900 p-6 text-white"><p className="font-mono text-xs text-neutral-400">03 / reminder</p><p className="mt-12 text-lg font-semibold leading-7">Progress is allowed to be quiet.</p></div></div></section>
-  <section className="bg-white"><div className="mx-auto max-w-6xl px-5 py-20 lg:px-8"><SectionHeading title="Selected projects" description="A few things currently moving from sketch to reality." href="/project" /><div className="grid gap-6 md:grid-cols-3">{projects.slice(0, 3).map((project) => <ProjectCard key={project.slug} project={project} />)}</div></div></section>
-  <section className="mx-auto grid max-w-6xl gap-16 px-5 py-20 lg:grid-cols-[1.1fr_.9fr] lg:px-8"><div><SectionHeading title="Recent notes" description="Thoughts, observations, and things I am still figuring out." href="/note" /><div>{notes.slice(0, 3).map((note) => <NoteCard key={note.slug} note={note} />)}</div></div><div><SectionHeading title="Current business" description="A few useful objects and tools from the studio." href="/jualan" linkLabel="Visit shop" /><div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1">{products.slice(0, 2).map((product) => <ProductCard key={product.slug} product={product} />)}</div></div></section>
-  <section className="border-t border-neutral-200 bg-neutral-100"><div className="mx-auto flex max-w-6xl flex-col justify-between gap-6 px-5 py-12 sm:flex-row sm:items-center lg:px-8"><div><Eyebrow>Find me elsewhere</Eyebrow><p className="text-xl font-semibold text-neutral-900">Keep in touch with the work.</p></div><div className="flex flex-wrap gap-3">{profile.socials.map((social) => <Link key={social.label} href={social.href} className="rounded-full border border-neutral-300 bg-white px-4 py-2 text-sm font-semibold text-neutral-700 hover:border-primary-400 hover:text-primary-700">{social.label} ↗</Link>)}</div></div></section>
-</>; }
+export const revalidate = 300;
+
+export default async function HomePage() {
+  const profile = await getPortfolioProfile();
+
+  return (
+    <>
+      <section className="grid-paper border-b border-neutral-200">
+        <div className="mx-auto max-w-6xl px-5 py-20 lg:px-8 lg:py-28">
+          <div className="grid items-end gap-12 lg:grid-cols-[1.3fr_.7fr]">
+            <div>
+              <Eyebrow>Personal archive / {profile.name}</Eyebrow>
+              <h1 className="max-w-3xl text-5xl font-bold leading-[1.05] tracking-tight text-neutral-950 sm:text-7xl">
+                Ideas worth <span className="text-primary-600">making</span> room
+                for.
+              </h1>
+              <p className="mt-7 max-w-xl text-lg leading-8 text-neutral-500">
+                {profile.intro}
+              </p>
+              <div className="mt-9 flex flex-wrap gap-3">
+                <Link
+                  href="/project"
+                  className="rounded-full bg-neutral-900 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-700"
+                >
+                  Explore projects <span className="ml-2">→</span>
+                </Link>
+                <Link
+                  href="/note"
+                  className="rounded-full border border-neutral-300 bg-white px-5 py-3 text-sm font-semibold text-neutral-700 transition-colors hover:border-primary-400 hover:text-primary-700"
+                >
+                  Read the notes
+                </Link>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-neutral-200 bg-white/80 p-6 shadow-sm">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-neutral-400">
+                Currently
+              </p>
+              <p className="mt-4 text-xl font-semibold leading-8 text-neutral-800">
+                {profile.headline}
+              </p>
+              <div className="mt-8 flex items-center gap-3 border-t border-neutral-200 pt-5">
+                <span className="h-2 w-2 rounded-full bg-success-500" />
+                <span className="text-sm text-neutral-500">
+                  {profile.location}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-5 py-20 lg:px-8">
+        <SectionHeading
+          title="A little about"
+          description={profile.about}
+          href="/note"
+          linkLabel="More notes"
+        />
+        <div className="grid gap-5 sm:grid-cols-3">
+          <div className="rounded-2xl bg-primary-950 p-6 text-white">
+            <p className="font-mono text-xs text-primary-300">01 / approach</p>
+            <p className="mt-12 text-lg font-semibold leading-7">
+              Stay curious. Make it tangible.
+            </p>
+          </div>
+          <div className="rounded-2xl bg-accent-100 p-6 text-neutral-900">
+            <p className="font-mono text-xs text-accent-700">02 / preference</p>
+            <p className="mt-12 text-lg font-semibold leading-7">
+              Fewer things, considered well.
+            </p>
+          </div>
+          <div className="rounded-2xl bg-neutral-900 p-6 text-white">
+            <p className="font-mono text-xs text-neutral-400">03 / reminder</p>
+            <p className="mt-12 text-lg font-semibold leading-7">
+              Progress is allowed to be quiet.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white">
+        <div className="mx-auto max-w-6xl px-5 py-20 lg:px-8">
+          <SectionHeading
+            title="Selected projects"
+            description="A few things currently moving from sketch to reality."
+            href="/project"
+          />
+          <div className="grid gap-6 md:grid-cols-3">
+            {projects.slice(0, 3).map((project) => (
+              <ProjectCard key={project.slug} project={project} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto grid max-w-6xl gap-16 px-5 py-20 lg:grid-cols-[1.1fr_.9fr] lg:px-8">
+        <div>
+          <SectionHeading
+            title="Recent notes"
+            description="Thoughts, observations, and things I am still figuring out."
+            href="/note"
+          />
+          <div>
+            {notes.slice(0, 3).map((note) => (
+              <NoteCard key={note.slug} note={note} />
+            ))}
+          </div>
+        </div>
+        <div>
+          <SectionHeading
+            title="Current business"
+            description="A few useful objects and tools from the studio."
+            href="/jualan"
+            linkLabel="Visit shop"
+          />
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1">
+            {products.slice(0, 2).map((product) => (
+              <ProductCard key={product.slug} product={product} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-neutral-200 bg-neutral-100">
+        <div className="mx-auto flex max-w-6xl flex-col justify-between gap-6 px-5 py-12 sm:flex-row sm:items-center lg:px-8">
+          <div>
+            <Eyebrow>Find me elsewhere</Eyebrow>
+            <p className="text-xl font-semibold text-neutral-900">
+              Keep in touch with the work.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            {profile.socials.map((social) => (
+              <Link
+                key={social.label}
+                href={social.href}
+                className="rounded-full border border-neutral-300 bg-white px-4 py-2 text-sm font-semibold text-neutral-700 hover:border-primary-400 hover:text-primary-700"
+              >
+                {social.label} ↗
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
