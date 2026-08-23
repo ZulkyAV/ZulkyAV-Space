@@ -1,12 +1,5 @@
 import Link from "next/link";
-import {
-  Eyebrow,
-  NoteCard,
-  ProductCard,
-  ProjectCard,
-  SectionHeading,
-} from "@/components/ui";
-import { notes, products, projects } from "@/data/mock-data";
+import { Eyebrow, SectionHeading } from "@/components/ui";
 import { getPortfolioProfile } from "@/lib/data/profile";
 
 export const revalidate = 300;
@@ -73,8 +66,6 @@ export default async function HomePage() {
         <SectionHeading
           title="A little about"
           description={profile.about}
-          href="/note"
-          linkLabel="More notes"
         />
         <div className="grid gap-5 sm:grid-cols-3">
           <div className="rounded-2xl bg-primary-950 p-6 text-white">
@@ -94,49 +85,6 @@ export default async function HomePage() {
             <p className="mt-12 text-lg font-semibold leading-7">
               Progress is allowed to be quiet.
             </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-white">
-        <div className="mx-auto max-w-6xl px-5 py-20 lg:px-8">
-          <SectionHeading
-            title="Selected projects"
-            description="A few things currently moving from sketch to reality."
-            href="/project"
-          />
-          <div className="grid gap-6 md:grid-cols-3">
-            {projects.slice(0, 3).map((project) => (
-              <ProjectCard key={project.slug} project={project} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto grid max-w-6xl gap-16 px-5 py-20 lg:grid-cols-[1.1fr_.9fr] lg:px-8">
-        <div>
-          <SectionHeading
-            title="Recent notes"
-            description="Thoughts, observations, and things I am still figuring out."
-            href="/note"
-          />
-          <div>
-            {notes.slice(0, 3).map((note) => (
-              <NoteCard key={note.slug} note={note} />
-            ))}
-          </div>
-        </div>
-        <div>
-          <SectionHeading
-            title="Current business"
-            description="A few useful objects and tools from the studio."
-            href="/jualan"
-            linkLabel="Visit shop"
-          />
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1">
-            {products.slice(0, 2).map((product) => (
-              <ProductCard key={product.slug} product={product} />
-            ))}
           </div>
         </div>
       </section>
