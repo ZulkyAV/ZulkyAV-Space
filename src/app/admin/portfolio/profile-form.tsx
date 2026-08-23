@@ -5,6 +5,7 @@ import {
   updatePortfolio,
   type PortfolioFormState,
 } from "@/app/admin/portfolio/actions";
+import { AvatarUploader } from "@/app/admin/portfolio/avatar-uploader";
 const initialPortfolioFormState: PortfolioFormState = {
   status: "idle",
   message: "",
@@ -107,17 +108,12 @@ export function PortfolioForm({ profile }: { profile: PortfolioProfile }) {
           />
         </label>
 
-        <label className="mt-6 block text-sm font-semibold text-neutral-700">
-          Avatar image URL
-          <input
-            name="avatarUrl"
-            type="url"
-            maxLength={1000}
-            placeholder="https://..."
-            defaultValue={profile.avatarUrl ?? ""}
-            className={inputClassName}
+        <div className="mt-6">
+          <AvatarUploader
+            initialUrl={profile.avatarUrl}
+            initialPublicId={profile.avatarPublicId}
           />
-        </label>
+        </div>
       </div>
 
       <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm sm:p-8">
