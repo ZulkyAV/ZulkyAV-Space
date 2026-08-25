@@ -14,9 +14,17 @@ type ProjectRow = {
   description: string;
   image_url: string | null;
   image_public_id: string | null;
+  download_url: string | null;
   project_type: AdminProjectContent["projectType"];
   stage: AdminProjectContent["stage"];
   is_published: boolean;
+  sort_order: number;
+};
+
+type ProjectImageRow = {
+  project_id: string;
+  image_url: string;
+  image_public_id: string | null;
   sort_order: number;
 };
 
@@ -37,7 +45,7 @@ export async function getAdminProjectContent(): Promise<{
       .order("sort_order"),
     supabase
       .from("projects")
-      .select("id,folder_id,slug,title,description,image_url,image_public_id,project_type,stage,is_published,sort_order")
+      .select("id,folder_id,slug,title,description,image_url,image_public_id,download_url,project_type,stage,is_published,sort_order")
       .order("sort_order")
       .order("created_at", { ascending: false }),
   ]);
@@ -51,9 +59,10 @@ export async function getAdminProjectContent(): Promise<{
   let components: Array<Record<string, unknown>> = [];
   let privateComponents: Array<Record<string, unknown>> = [];
   let updates: Array<Record<string, unknown>> = [];
+  let galleryImages: ProjectImageRow[] = [];
 
   if (projectIds.length) {
-    const [componentResult, updateResult] = await Promise.all([
+    const [componentResult, updateResult, galleryResult] = await Promise.all([
       supabase
         .from("project_components")
         .select("id,project_id,name,kind,sort_order")
@@ -64,12 +73,18 @@ export async function getAdminProjectContent(): Promise<{
         .select("project_id,title,content,update_date,is_published,created_at")
         .in("project_id", projectIds)
         .order("update_date", { ascending: false }),
+      supabase
+        .from("project_images")
+        .select("project_id,image_url,image_public_id,sort_order")
+        .in("project_id", projectIds)
+        .order("sort_order"),
     ]);
-    if (componentResult.error || updateResult.error) {
+    if (componentResult.error || updateResult.error || galleryResult.error) {
       return { folders: [], projects: [], error: "Project details could not be loaded." };
     }
     components = componentResult.data ?? [];
     updates = updateResult.data ?? [];
+    galleryImages = (galleryResult.data ?? []) as ProjectImageRow[];
 
     const componentIds = components.map((component) => String(component.id));
     if (componentIds.length) {
@@ -103,6 +118,13 @@ export async function getAdminProjectContent(): Promise<{
       description: project.description,
       imageUrl: project.image_url ?? "",
       imagePublicId: project.image_public_id ?? "",
+      downloadUrl: project.download_url ?? "",
+      galleryImages: galleryImages
+        .filter((image) => image.project_id === project.id)
+        .map((image) => ({
+          imageUrl: image.image_url,
+          imagePublicId: image.image_public_id ?? "",
+        })),
       projectType: project.project_type,
       stage: project.stage,
       isPublished: project.is_published,

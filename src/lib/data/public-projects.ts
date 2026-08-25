@@ -20,6 +20,7 @@ type ProjectRow = {
   title: string;
   description: string;
   image_url: string | null;
+  download_url: string | null;
   stage: string;
   sort_order: number;
 };
@@ -31,6 +32,10 @@ type ComponentRow = {
 type UpdateRow = {
   title: string;
   content: string;
+};
+
+type ProjectImageRow = {
+  image_url: string;
 };
 
 export type PublicProjectIndexResult = {
@@ -51,7 +56,7 @@ export type PublicProjectDetailResult = {
 
 const folderSelect = "id,slug,name,description,accent,status,sort_order";
 const projectSelect =
-  "id,folder_id,slug,title,description,image_url,stage,sort_order";
+  "id,folder_id,slug,title,description,image_url,download_url,stage,sort_order";
 
 function stageLabel(stage: string) {
   return stage
@@ -82,6 +87,7 @@ function mapProject(
   folderSlug: string,
   components: string[] = [],
   updates: string[] = [],
+  galleryImages: string[] = [],
 ): Project {
   return {
     slug: row.slug,
@@ -90,6 +96,8 @@ function mapProject(
     description: row.description,
     status: stageLabel(row.stage),
     image: row.image_url ?? "",
+    galleryImages,
+    downloadUrl: row.download_url ?? undefined,
     components,
     updates,
   };
@@ -236,7 +244,7 @@ export async function getPublicProjectDetail(
     if (!projectData) return null;
 
     const projectRow = projectData as ProjectRow;
-    const [componentResult, updateResult] = await Promise.all([
+    const [componentResult, updateResult, galleryResult] = await Promise.all([
       supabase
         .from("project_components")
         .select("name")
@@ -250,10 +258,17 @@ export async function getPublicProjectDetail(
         .eq("is_published", true)
         .order("update_date", { ascending: false })
         .order("created_at", { ascending: false }),
+      supabase
+        .from("project_images")
+        .select("image_url")
+        .eq("project_id", projectRow.id)
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: true }),
     ]);
 
     if (componentResult.error) throw componentResult.error;
     if (updateResult.error) throw updateResult.error;
+    if (galleryResult.error) throw galleryResult.error;
 
     const components = ((componentResult.data ?? []) as ComponentRow[]).map(
       (component) => component.name,
@@ -261,10 +276,13 @@ export async function getPublicProjectDetail(
     const updates = ((updateResult.data ?? []) as UpdateRow[]).map((update) =>
       [update.title, update.content].filter(Boolean).join(" — "),
     );
+    const galleryImages = ((galleryResult.data ?? []) as ProjectImageRow[]).map(
+      (image) => image.image_url,
+    );
 
     return {
       folder: mapFolder(folderRow, 0),
-      project: mapProject(projectRow, folderRow.slug, components, updates),
+      project: mapProject(projectRow, folderRow.slug, components, updates, galleryImages),
     };
   } catch {
     return null;

@@ -52,9 +52,42 @@ function ProjectFields({
         <input name="slug" required maxLength={140} defaultValue={project?.slug} placeholder="chicken-teriyaki" className={input} />
       </label>
       <label className="block text-sm font-semibold text-neutral-300">Description
-        <textarea name="description" rows={4} maxLength={3000} defaultValue={project?.description} className={input} />
+        <textarea name="description" rows={10} maxLength={12000} defaultValue={project?.description} className={input} />
+        <span className="mt-2 block text-xs font-normal text-neutral-400">Up to 12,000 characters. Separate paragraphs with a blank line.</span>
       </label>
-      <AdminImageUploader scope="project" initialUrl={project?.imageUrl} initialPublicId={project?.imagePublicId} />
+      <AdminImageUploader scope="project" initialUrl={project?.imageUrl} initialPublicId={project?.imagePublicId} label="Project cover" />
+      <div className="space-y-3">
+        <div>
+          <p className="text-sm font-semibold text-neutral-300">Project gallery</p>
+          <p className="mt-1 text-xs text-neutral-400">Optional · add up to 4 extra photos. Empty slots are ignored.</p>
+        </div>
+        <div className="grid gap-4 lg:grid-cols-2">
+          {Array.from({ length: 4 }, (_, index) => (
+            <AdminImageUploader
+              key={index}
+              scope="project"
+              label={`Gallery photo ${index + 1}`}
+              urlFieldName={`galleryImageUrl${index}`}
+              publicIdFieldName={`galleryImagePublicId${index}`}
+              initialUrl={project?.galleryImages[index]?.imageUrl}
+              initialPublicId={project?.galleryImages[index]?.imagePublicId}
+            />
+          ))}
+        </div>
+      </div>
+      <label className="block text-sm font-semibold text-neutral-300">Download URL
+        <input
+          name="downloadUrl"
+          type="url"
+          maxLength={2000}
+          defaultValue={project?.downloadUrl}
+          placeholder="https://github.com/owner/repo/releases/download/v1.0.0/app.apk"
+          className={input}
+        />
+        <span className="mt-2 block text-xs font-normal text-neutral-400">
+          Optional. HTTPS links appear as a Download APK button on the public project page.
+        </span>
+      </label>
       <div className="grid gap-5 sm:grid-cols-4">
         <label className="text-sm font-semibold text-neutral-300">Type
           <select name="projectType" defaultValue={project?.projectType ?? "other"} className={input}>

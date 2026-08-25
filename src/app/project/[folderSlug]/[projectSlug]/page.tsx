@@ -47,9 +47,19 @@ export default async function ProjectDetailPage({
           <div className="mt-5">
             <StatusBadge status={project.status} />
           </div>
-          <p className="mt-6 text-lg leading-8 text-neutral-400">
+          <div className="mt-6 whitespace-pre-line text-lg leading-8 text-neutral-400">
             {project.description}
-          </p>
+          </div>
+          {project.downloadUrl ? (
+            <a
+              href={project.downloadUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-7 inline-flex items-center gap-2 rounded-full bg-primary-700 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-primary-950/40 transition-colors hover:bg-primary-600"
+            >
+              Download APK <span aria-hidden="true">↓</span>
+            </a>
+          ) : null}
           <div className="mt-10">
             <p className="font-mono text-[10px] uppercase tracking-wider text-neutral-500">
               Ingredients &amp; components
@@ -76,6 +86,26 @@ export default async function ProjectDetailPage({
           </div>
         </div>
       </div>
+      {project.galleryImages.length ? (
+        <section className="mt-16 border-t border-white/10 pt-10">
+          <Eyebrow>Project gallery</Eyebrow>
+          <h2 className="text-2xl font-bold text-neutral-50">More from the build</h2>
+          <div className="mt-6 grid gap-5 sm:grid-cols-2">
+            {project.galleryImages.map((image, index) => (
+              <div
+                key={`${index}-${image}`}
+                className="aspect-[4/3] overflow-hidden rounded-2xl border border-white/10 bg-[#1B1B23]"
+              >
+                <img
+                  src={image}
+                  alt={`${project.title} gallery photo ${index + 1}`}
+                  className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
       <div className="mt-20 grid gap-12 border-t border-white/10 pt-10 md:grid-cols-[.7fr_1.3fr]">
         <div>
           <Eyebrow>Latest updates</Eyebrow>

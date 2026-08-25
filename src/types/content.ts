@@ -29,6 +29,8 @@ export interface Project {
   description: string;
   status: string;
   image: string;
+  galleryImages: string[];
+  downloadUrl?: string;
   components: string[];
   updates: string[];
 }

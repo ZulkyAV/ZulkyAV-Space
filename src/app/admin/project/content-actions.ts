@@ -21,6 +21,11 @@ type ParsedProject = {
   description: string;
   imageUrl: string;
   imagePublicId: string;
+  downloadUrl: string;
+  galleryImages: Array<{
+    imageUrl: string;
+    imagePublicId: string;
+  }>;
   projectType: string;
   stage: string;
   isPublished: boolean;
@@ -51,13 +56,18 @@ function parseProject(formData: FormData): ParsedProject | ProjectContentState {
   const folderId = readFormText(formData, "folderId", 36);
   const title = readFormText(formData, "title", 160);
   const slug = readFormText(formData, "slug", 140).toLowerCase();
-  const description = readFormText(formData, "description", 3000);
+  const description = readFormText(formData, "description", 12000);
   const imageUrl = readFormText(formData, "imageUrl", 2000);
   const imagePublicId = readFormText(formData, "imagePublicId", 500);
+  const downloadUrl = readFormText(formData, "downloadUrl", 2000);
   const projectType = readFormText(formData, "projectType", 20);
   const stage = readFormText(formData, "stage", 20);
   const isPublished = readFormText(formData, "publication", 20) === "published";
   const sortOrder = Number(readFormText(formData, "sortOrder", 6));
+  const galleryImages = Array.from({ length: 4 }, (_, index) => ({
+    imageUrl: readFormText(formData, `galleryImageUrl${index}`, 2000),
+    imagePublicId: readFormText(formData, `galleryImagePublicId${index}`, 500),
+  })).filter((image) => image.imageUrl);
 
   if (!isUuid(folderId) || !title || !slug || !isSlug(slug)) {
     return { status: "error", message: "Folder, title, and a valid slug are required." };
@@ -70,6 +80,22 @@ function parseProject(formData: FormData): ParsedProject | ProjectContentState {
   }
   if (!Number.isInteger(sortOrder) || sortOrder < 0 || sortOrder > 9999) {
     return { status: "error", message: "Sort order must be 0–9999." };
+  }
+  if (downloadUrl) {
+    try {
+      const parsedUrl = new URL(downloadUrl);
+      if (parsedUrl.protocol !== "https:") throw new Error("Invalid protocol");
+    } catch {
+      return { status: "error", message: "Download URL must be a valid HTTPS link." };
+    }
+  }
+  for (const image of galleryImages) {
+    try {
+      const parsedUrl = new URL(image.imageUrl);
+      if (parsedUrl.protocol !== "https:") throw new Error("Invalid protocol");
+    } catch {
+      return { status: "error", message: "Every gallery image must use a valid HTTPS URL." };
+    }
   }
 
   const components = parseLines(readFormText(formData, "components", 30000)).map(
@@ -114,6 +140,8 @@ function parseProject(formData: FormData): ParsedProject | ProjectContentState {
     description,
     imageUrl,
     imagePublicId,
+    downloadUrl,
+    galleryImages,
     projectType,
     stage,
     isPublished,
@@ -146,6 +174,16 @@ async function syncDetails(
   projectId: string,
   parsed: ParsedProject,
 ) {
+  const currentGalleryResult = await supabase
+    .from("project_images")
+    .select("image_public_id")
+    .eq("project_id", projectId);
+  if (currentGalleryResult.error) return "Existing gallery could not be loaded.";
+
+  const deleteGallery = await supabase
+    .from("project_images")
+    .delete()
+    .eq("project_id", projectId);
   const deleteComponents = await supabase
     .from("project_components")
     .delete()
@@ -154,7 +192,33 @@ async function syncDetails(
     .from("project_updates")
     .delete()
     .eq("project_id", projectId);
-  if (deleteComponents.error || deleteUpdates.error) return "Existing details could not be replaced.";
+  if (deleteGallery.error || deleteComponents.error || deleteUpdates.error) {
+    return "Existing details could not be replaced.";
+  }
+
+  if (parsed.galleryImages.length) {
+    const galleryResult = await supabase.from("project_images").insert(
+      parsed.galleryImages.map((image, index) => ({
+        project_id: projectId,
+        image_url: image.imageUrl,
+        image_public_id: image.imagePublicId || null,
+        alt_text: `${parsed.title} gallery photo ${index + 1}`,
+        sort_order: index,
+      })),
+    );
+    if (galleryResult.error) return "Gallery photos could not be saved.";
+  }
+
+  const nextPublicIds = new Set(
+    parsed.galleryImages.map((image) => image.imagePublicId).filter(Boolean),
+  );
+  await Promise.all(
+    (currentGalleryResult.data ?? []).map((image) =>
+      nextPublicIds.has(String(image.image_public_id ?? ""))
+        ? Promise.resolve()
+        : destroyManagedImage(image.image_public_id, "project"),
+    ),
+  );
 
   if (parsed.components.length) {
     const { data, error } = await supabase
@@ -228,6 +292,7 @@ export async function createProjectContent(
       description: parsed.description,
       image_url: parsed.imageUrl || null,
       image_public_id: parsed.imagePublicId || null,
+      download_url: parsed.downloadUrl || null,
       project_type: parsed.projectType,
       stage: parsed.stage,
       is_published: parsed.isPublished,
@@ -276,6 +341,7 @@ export async function updateProjectContent(
       description: parsed.description,
       image_url: parsed.imageUrl || null,
       image_public_id: parsed.imagePublicId || null,
+      download_url: parsed.downloadUrl || null,
       project_type: parsed.projectType,
       stage: parsed.stage,
       is_published: parsed.isPublished,

@@ -25,10 +25,16 @@ export function AdminImageUploader({
   scope,
   initialUrl = "",
   initialPublicId = "",
+  urlFieldName = "imageUrl",
+  publicIdFieldName = "imagePublicId",
+  label = "Image",
 }: {
   scope: UploadScope;
   initialUrl?: string | null;
   initialPublicId?: string | null;
+  urlFieldName?: string;
+  publicIdFieldName?: string;
+  label?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [imageUrl, setImageUrl] = useState(initialUrl ?? "");
@@ -88,8 +94,8 @@ export function AdminImageUploader({
 
   return (
     <div className="rounded-xl border border-dashed border-white/15 bg-[#101015] p-4">
-      <input type="hidden" name="imageUrl" value={imageUrl} />
-      <input type="hidden" name="imagePublicId" value={publicId} />
+      <input type="hidden" name={urlFieldName} value={imageUrl} />
+      <input type="hidden" name={publicIdFieldName} value={publicId} />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
         {imageUrl ? (
           <img
@@ -103,6 +109,7 @@ export function AdminImageUploader({
           </div>
         )}
         <div className="flex-1">
+          <p className="text-sm font-semibold text-neutral-300">{label}</p>
           <p className="text-xs text-neutral-400">JPG, PNG, or WebP · max 5 MB</p>
           <div className="mt-3 flex flex-wrap gap-2">
             <button

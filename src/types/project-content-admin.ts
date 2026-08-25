@@ -6,6 +6,11 @@ export type AdminProjectContent = {
   description: string;
   imageUrl: string;
   imagePublicId: string;
+  downloadUrl: string;
+  galleryImages: Array<{
+    imageUrl: string;
+    imagePublicId: string;
+  }>;
   projectType: "food" | "drink" | "iot" | "web" | "other";
   stage: "idea" | "experiment" | "active" | "paused" | "completed";
   isPublished: boolean;
