@@ -75,19 +75,33 @@ function ProjectFields({
           ))}
         </div>
       </div>
-      <label className="block text-sm font-semibold text-neutral-300">Download URL
-        <input
-          name="downloadUrl"
-          type="url"
-          maxLength={2000}
-          defaultValue={project?.downloadUrl}
-          placeholder="https://github.com/owner/repo/releases/download/v1.0.0/app.apk"
-          className={input}
-        />
-        <span className="mt-2 block text-xs font-normal text-neutral-400">
-          Optional. HTTPS links appear as a Download APK button on the public project page.
-        </span>
-      </label>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <label className="block text-sm font-semibold text-neutral-300">Button text
+          <input
+            name="actionLabel"
+            maxLength={80}
+            defaultValue={project?.actionLabel ?? "Open project"}
+            placeholder="Download EA"
+            className={input}
+          />
+          <span className="mt-2 block text-xs font-normal text-neutral-400">
+            Examples: Download EA, Download Indicator, View ESP32 Build, Open Website.
+          </span>
+        </label>
+        <label className="block text-sm font-semibold text-neutral-300">Button link
+          <input
+            name="downloadUrl"
+            type="url"
+            maxLength={2000}
+            defaultValue={project?.downloadUrl}
+            placeholder="https://github.com/owner/repo/releases/..."
+            className={input}
+          />
+          <span className="mt-2 block text-xs font-normal text-neutral-400">
+            Optional. The button only appears publicly when this HTTPS link is filled in.
+          </span>
+        </label>
+      </div>
       <div className="grid gap-5 sm:grid-cols-4">
         <label className="text-sm font-semibold text-neutral-300">Type
           <select name="projectType" defaultValue={project?.projectType ?? "other"} className={input}>

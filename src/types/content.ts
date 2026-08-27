@@ -31,6 +31,7 @@ export interface Project {
   image: string;
   galleryImages: string[];
   downloadUrl?: string;
+  actionLabel?: string;
   components: string[];
   updates: string[];
 }

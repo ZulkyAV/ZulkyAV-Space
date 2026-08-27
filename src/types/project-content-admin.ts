@@ -7,6 +7,7 @@ export type AdminProjectContent = {
   imageUrl: string;
   imagePublicId: string;
   downloadUrl: string;
+  actionLabel: string;
   galleryImages: Array<{
     imageUrl: string;
     imagePublicId: string;

@@ -22,6 +22,7 @@ type ParsedProject = {
   imageUrl: string;
   imagePublicId: string;
   downloadUrl: string;
+  actionLabel: string;
   galleryImages: Array<{
     imageUrl: string;
     imagePublicId: string;
@@ -60,6 +61,7 @@ function parseProject(formData: FormData): ParsedProject | ProjectContentState {
   const imageUrl = readFormText(formData, "imageUrl", 2000);
   const imagePublicId = readFormText(formData, "imagePublicId", 500);
   const downloadUrl = readFormText(formData, "downloadUrl", 2000);
+  const actionLabel = readFormText(formData, "actionLabel", 80);
   const projectType = readFormText(formData, "projectType", 20);
   const stage = readFormText(formData, "stage", 20);
   const isPublished = readFormText(formData, "publication", 20) === "published";
@@ -82,6 +84,9 @@ function parseProject(formData: FormData): ParsedProject | ProjectContentState {
     return { status: "error", message: "Sort order must be 0–9999." };
   }
   if (downloadUrl) {
+    if (!actionLabel) {
+      return { status: "error", message: "Button text is required when a button link is added." };
+    }
     try {
       const parsedUrl = new URL(downloadUrl);
       if (parsedUrl.protocol !== "https:") throw new Error("Invalid protocol");
@@ -141,6 +146,7 @@ function parseProject(formData: FormData): ParsedProject | ProjectContentState {
     imageUrl,
     imagePublicId,
     downloadUrl,
+    actionLabel: actionLabel || "Open project",
     galleryImages,
     projectType,
     stage,
@@ -293,6 +299,7 @@ export async function createProjectContent(
       image_url: parsed.imageUrl || null,
       image_public_id: parsed.imagePublicId || null,
       download_url: parsed.downloadUrl || null,
+      action_label: parsed.actionLabel,
       project_type: parsed.projectType,
       stage: parsed.stage,
       is_published: parsed.isPublished,
@@ -342,6 +349,7 @@ export async function updateProjectContent(
       image_url: parsed.imageUrl || null,
       image_public_id: parsed.imagePublicId || null,
       download_url: parsed.downloadUrl || null,
+      action_label: parsed.actionLabel,
       project_type: parsed.projectType,
       stage: parsed.stage,
       is_published: parsed.isPublished,
