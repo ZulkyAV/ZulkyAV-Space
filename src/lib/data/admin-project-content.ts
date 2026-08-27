@@ -15,6 +15,7 @@ type ProjectRow = {
   image_url: string | null;
   image_public_id: string | null;
   download_url: string | null;
+  action_label: string;
   project_type: AdminProjectContent["projectType"];
   stage: AdminProjectContent["stage"];
   is_published: boolean;
@@ -45,7 +46,7 @@ export async function getAdminProjectContent(): Promise<{
       .order("sort_order"),
     supabase
       .from("projects")
-      .select("id,folder_id,slug,title,description,image_url,image_public_id,download_url,project_type,stage,is_published,sort_order")
+      .select("id,folder_id,slug,title,description,image_url,image_public_id,download_url,action_label,project_type,stage,is_published,sort_order")
       .order("sort_order")
       .order("created_at", { ascending: false }),
   ]);
@@ -119,6 +120,7 @@ export async function getAdminProjectContent(): Promise<{
       imageUrl: project.image_url ?? "",
       imagePublicId: project.image_public_id ?? "",
       downloadUrl: project.download_url ?? "",
+      actionLabel: project.action_label || "Download APK",
       galleryImages: galleryImages
         .filter((image) => image.project_id === project.id)
         .map((image) => ({

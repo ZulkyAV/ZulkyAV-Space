@@ -21,6 +21,7 @@ type ProjectRow = {
   description: string;
   image_url: string | null;
   download_url: string | null;
+  action_label: string;
   stage: string;
   sort_order: number;
 };
@@ -56,7 +57,7 @@ export type PublicProjectDetailResult = {
 
 const folderSelect = "id,slug,name,description,accent,status,sort_order";
 const projectSelect =
-  "id,folder_id,slug,title,description,image_url,download_url,stage,sort_order";
+  "id,folder_id,slug,title,description,image_url,download_url,action_label,stage,sort_order";
 
 function stageLabel(stage: string) {
   return stage
@@ -98,6 +99,7 @@ function mapProject(
     image: row.image_url ?? "",
     galleryImages,
     downloadUrl: row.download_url ?? undefined,
+    actionLabel: row.action_label || "Download APK",
     components,
     updates,
   };

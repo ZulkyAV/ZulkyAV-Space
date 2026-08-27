@@ -57,7 +57,7 @@ export default async function ProjectDetailPage({
               rel="noopener noreferrer"
               className="mt-7 inline-flex items-center gap-2 rounded-full bg-primary-700 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-primary-950/40 transition-colors hover:bg-primary-600"
             >
-              Download APK <span aria-hidden="true">↓</span>
+              {project.actionLabel || "Open project"} <span aria-hidden="true">↗</span>
             </a>
           ) : null}
           <div className="mt-10">
