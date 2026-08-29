@@ -158,6 +158,21 @@ export function PortfolioForm({ profile }: { profile: PortfolioProfile }) {
               className={inputClassName}
             />
           </label>
+
+          <label className="text-sm font-semibold text-neutral-300">
+            WhatsApp URL
+            <input
+              name="whatsappUrl"
+              type="url"
+              maxLength={1000}
+              placeholder="https://wa.me/6281234567890"
+              defaultValue={socialUrl(profile, "WhatsApp")}
+              className={inputClassName}
+            />
+            <span className="mt-2 block text-xs font-normal leading-5 text-neutral-500">
+              Use the international number format without +, spaces, or dashes.
+            </span>
+          </label>
         </div>
       </div>
 

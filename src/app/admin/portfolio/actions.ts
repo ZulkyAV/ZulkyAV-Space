@@ -40,6 +40,7 @@ export async function updatePortfolio(
   const about = readText(formData, "about", 1200);
   const avatarUrl = readHttpsUrl(formData, "avatarUrl", 1000);
   const avatarPublicId = readText(formData, "avatarPublicId", 500);
+  const whatsappUrl = readHttpsUrl(formData, "whatsappUrl", 1000);
 
   if (!name || !headline || !intro || !about) {
     return {
@@ -77,12 +78,27 @@ export async function updatePortfolio(
       label: "LinkedIn",
       href: readHttpsUrl(formData, "linkedinUrl", 1000),
     },
+    {
+      label: "WhatsApp",
+      href: whatsappUrl,
+    },
   ];
 
   if (socialLinks.some((social) => social.href === null)) {
     return {
       status: "error",
       message: "Social links must use valid HTTPS URLs.",
+    };
+  }
+
+  if (
+    whatsappUrl &&
+    new URL(whatsappUrl).hostname !== "wa.me" &&
+    !new URL(whatsappUrl).hostname.endsWith(".whatsapp.com")
+  ) {
+    return {
+      status: "error",
+      message: "WhatsApp must use a wa.me or whatsapp.com URL.",
     };
   }
 

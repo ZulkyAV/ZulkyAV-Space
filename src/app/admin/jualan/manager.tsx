@@ -7,6 +7,8 @@ import {
   createProduct,
   createShopFolder,
   deactivateProduct,
+  deleteProduct,
+  deleteShopFolder,
   updateProduct,
   updateShopFolder,
   type ShopActionState,
@@ -52,11 +54,13 @@ function CreateFolder() {
 function FolderEditor({ folder }: { folder: AdminShopFolder }) {
   const [state, action, pending] = useActionState(updateShopFolder, initialState);
   const [archiveState, archiveAction, archiving] = useActionState(archiveShopFolder, initialState);
+  const [deleteState, deleteAction, deleting] = useActionState(deleteShopFolder, initialState);
   return <article className="rounded-2xl border border-white/10 bg-[#14141A] p-5 shadow-sm sm:p-6">
     <div className="flex flex-wrap justify-between gap-3"><div><h3 className="font-bold text-neutral-100">{folder.name}</h3><p className="mt-1 font-mono text-[11px] text-neutral-500">/jualan/{folder.slug}</p></div><div className="flex gap-2"><span className="rounded-full bg-[#1B1B23] px-3 py-1 text-xs font-semibold">{folder.productCount} products</span><span className="rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-300">{folder.status}</span></div></div>
     <details className="mt-5 border-t border-white/10 pt-5"><summary className="cursor-pointer text-sm font-semibold text-primary-300">Edit folder</summary>
       <form action={action} className="mt-5 space-y-5"><input type="hidden" name="id" value={folder.id} /><FolderFields folder={folder} /><Message state={state} /><button disabled={pending} className="rounded-xl bg-primary-700 px-5 py-3 text-sm font-semibold text-white disabled:opacity-60">{pending ? "Saving..." : "Save folder"}</button></form>
       {folder.status !== "archived" ? <form action={archiveAction} className="mt-5 border-t border-white/10 pt-5"><input type="hidden" name="id" value={folder.id} /><Message state={archiveState} /><button disabled={archiving} className="mt-3 rounded-xl border border-error-200 px-4 py-2.5 text-sm font-semibold text-error-700 disabled:opacity-60">{archiving ? "Archiving..." : "Archive folder"}</button></form> : null}
+      <form action={deleteAction} className="mt-5 border-t border-error-200/30 pt-5" onSubmit={(event) => { if (!window.confirm(`Permanently delete \"${folder.name}\" and its ${folder.productCount} product(s)? Images will also be removed. This cannot be undone.`)) event.preventDefault(); }}><input type="hidden" name="id" value={folder.id} /><Message state={deleteState} /><button disabled={deleting} className="mt-3 rounded-xl bg-error-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-error-500 disabled:opacity-60">{deleting ? "Deleting..." : "Delete folder permanently"}</button></form>
     </details>
   </article>;
 }
@@ -97,9 +101,11 @@ function CreateProduct({ folders }: { folders: AdminShopFolder[] }) {
 function ProductEditor({ folders, product }: { folders: AdminShopFolder[]; product: AdminProduct }) {
   const [state, action, pending] = useActionState(updateProduct, initialState);
   const [offState, offAction, turningOff] = useActionState(deactivateProduct, initialState);
+  const [deleteState, deleteAction, deleting] = useActionState(deleteProduct, initialState);
   return <article className="rounded-2xl border border-white/10 bg-[#14141A] p-5 shadow-sm sm:p-6"><div className="flex flex-wrap items-start justify-between gap-3"><div><h3 className="font-bold text-neutral-100">{product.name}</h3><p className="mt-1 font-mono text-[11px] text-neutral-500">{product.sku || "No SKU"} · stock {product.currentStock}</p></div><span className={`rounded-full px-3 py-1 text-xs font-semibold ${product.isActive ? "bg-success-50 text-success-700" : "bg-[#1B1B23] text-neutral-400"}`}>{product.isActive ? "active" : "hidden"}</span></div>
     <details className="mt-5 border-t border-white/10 pt-5"><summary className="cursor-pointer text-sm font-semibold text-primary-300">Edit product</summary><form action={action} className="mt-5 space-y-5"><input type="hidden" name="id" value={product.id} /><ProductFields folders={folders} product={product} /><Message state={state} /><button disabled={pending} className="rounded-xl bg-primary-700 px-5 py-3 text-sm font-semibold text-white disabled:opacity-60">{pending ? "Saving..." : "Save product"}</button></form>
       {product.isActive ? <form action={offAction} className="mt-5 border-t border-white/10 pt-5"><input type="hidden" name="id" value={product.id} /><Message state={offState} /><button disabled={turningOff} className="mt-3 rounded-xl border border-error-200 px-4 py-2.5 text-sm font-semibold text-error-700 disabled:opacity-60">{turningOff ? "Hiding..." : "Hide product publicly"}</button></form> : null}
+      <form action={deleteAction} className="mt-5 border-t border-error-200/30 pt-5" onSubmit={(event) => { if (!window.confirm(`Permanently delete \"${product.name}\"? Its managed image will also be removed. This cannot be undone.`)) event.preventDefault(); }}><input type="hidden" name="id" value={product.id} /><Message state={deleteState} /><button disabled={deleting} className="mt-3 rounded-xl bg-error-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-error-500 disabled:opacity-60">{deleting ? "Deleting..." : "Delete product permanently"}</button></form>
     </details>
   </article>;
 }

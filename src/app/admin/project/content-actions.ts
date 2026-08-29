@@ -385,3 +385,40 @@ export async function archiveProjectContent(
   refresh();
   return { status: "success", message: "Project unpublished and paused." };
 }
+
+export async function deleteProjectContent(
+  _state: ProjectContentState,
+  formData: FormData,
+): Promise<ProjectContentState> {
+  const id = readFormText(formData, "id", 36);
+  if (!isUuid(id)) return { status: "error", message: "Invalid project ID." };
+
+  const supabase = await getApprovedAdminClient();
+  if (!supabase) return { status: "error", message: "Admin session expired." };
+
+  const [{ data: project, error: projectError }, galleryResult] = await Promise.all([
+    supabase.from("projects").select("id,image_public_id").eq("id", id).maybeSingle(),
+    supabase.from("project_images").select("image_public_id").eq("project_id", id),
+  ]);
+  if (projectError || !project || galleryResult.error) {
+    return { status: "error", message: "Project files could not be loaded for deletion." };
+  }
+
+  const { data, error } = await supabase
+    .from("projects")
+    .delete()
+    .eq("id", id)
+    .select("id")
+    .maybeSingle();
+  if (error || !data) return { status: "error", message: "Project could not be deleted." };
+
+  await Promise.all([
+    destroyManagedImage(project.image_public_id, "project"),
+    ...(galleryResult.data ?? []).map((image) =>
+      destroyManagedImage(image.image_public_id, "project"),
+    ),
+  ]);
+
+  refresh();
+  return { status: "success", message: "Project and its files permanently deleted." };
+}

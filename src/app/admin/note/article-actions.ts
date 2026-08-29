@@ -209,3 +209,30 @@ export async function updateNoteArticle(
   refreshNotePaths();
   return { status: "success", message: "Note article saved." };
 }
+
+export async function deleteNoteArticle(
+  _previousState: NoteArticleFormState,
+  formData: FormData,
+): Promise<NoteArticleFormState> {
+  const id = readText(formData, "id", 36);
+  if (!isUuid(id)) return { status: "error", message: "The article ID is invalid." };
+
+  const supabase = await getApprovedAdminClient();
+  if (!supabase) {
+    return { status: "error", message: "Your verified admin session is no longer valid." };
+  }
+
+  const { data, error } = await supabase
+    .from("notes")
+    .delete()
+    .eq("id", id)
+    .select("id")
+    .maybeSingle();
+
+  if (error || !data) {
+    return { status: "error", message: "The Note article could not be deleted." };
+  }
+
+  refreshNotePaths();
+  return { status: "success", message: "Note article permanently deleted." };
+}
