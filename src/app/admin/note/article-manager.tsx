@@ -3,6 +3,7 @@
 import { useActionState, useMemo, useState } from "react";
 import {
   createNoteArticle,
+  deleteNoteArticle,
   updateNoteArticle,
   type NoteArticleFormState,
 } from "@/app/admin/note/article-actions";
@@ -248,6 +249,10 @@ function ArticleEditor({
     updateNoteArticle,
     initialState,
   );
+  const [deleteState, deleteAction, deleting] = useActionState(
+    deleteNoteArticle,
+    initialState,
+  );
   const folder = folders.find((entry) => entry.id === article.folderId);
 
   return (
@@ -293,6 +298,25 @@ function ArticleEditor({
             className="rounded-xl bg-primary-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {pending ? "Saving..." : "Save article"}
+          </button>
+        </form>
+        <form
+          action={deleteAction}
+          className="mt-5 border-t border-error-200/30 pt-5"
+          onSubmit={(event) => {
+            if (!window.confirm(`Permanently delete \"${article.title}\"? This cannot be undone.`)) {
+              event.preventDefault();
+            }
+          }}
+        >
+          <input type="hidden" name="id" value={article.id} />
+          <ResultMessage state={deleteState} />
+          <button
+            type="submit"
+            disabled={deleting}
+            className="mt-3 rounded-xl bg-error-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-error-500 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {deleting ? "Deleting..." : "Delete article permanently"}
           </button>
         </form>
       </details>

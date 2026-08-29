@@ -236,3 +236,45 @@ export async function archiveNoteFolder(
 
   return { status: "success", message: "Note folder archived." };
 }
+
+export async function deleteNoteFolder(
+  _previousState: NoteFolderFormState,
+  formData: FormData,
+): Promise<NoteFolderFormState> {
+  const id = readText(formData, "id", 36);
+  if (!isUuid(id)) return { status: "error", message: "The folder ID is invalid." };
+
+  const supabase = await getApprovedAdminClient();
+  if (!supabase) {
+    return { status: "error", message: "Your verified admin session is no longer valid." };
+  }
+
+  const { data: folder, error: folderError } = await supabase
+    .from("folders")
+    .select("id")
+    .eq("id", id)
+    .eq("section", "note")
+    .maybeSingle();
+  if (folderError || !folder) {
+    return { status: "error", message: "The Note folder was not found." };
+  }
+
+  const articlesResult = await supabase.from("notes").delete().eq("folder_id", id);
+  if (articlesResult.error) {
+    return { status: "error", message: "The folder's articles could not be deleted." };
+  }
+
+  const { data, error } = await supabase
+    .from("folders")
+    .delete()
+    .eq("id", id)
+    .eq("section", "note")
+    .select("id")
+    .maybeSingle();
+  if (error || !data) {
+    return { status: "error", message: "The Note folder could not be deleted." };
+  }
+
+  refreshNotePaths();
+  return { status: "success", message: "Note folder and its articles permanently deleted." };
+}

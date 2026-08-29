@@ -37,7 +37,7 @@ export default async function ProjectFolderPage({
         </p>
       </div>
       {projects.length ? (
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
+        <div className="mt-10 space-y-6">
           {projects.map((project) => (
             <ProjectCard key={project.slug} project={project} />
           ))}

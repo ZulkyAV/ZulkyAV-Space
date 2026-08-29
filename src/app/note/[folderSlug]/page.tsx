@@ -36,7 +36,7 @@ export default async function NoteFolderPage({
           {folder.description}
         </p>
       </div>
-      <div className="mt-10">
+      <div className="mt-10 space-y-4">
         {notes.length ? (
           notes.map((note) => <NoteCard key={note.slug} note={note} />)
         ) : (

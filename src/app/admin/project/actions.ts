@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { destroyManagedImage } from "@/lib/cloudinary";
 import { createClient } from "@/lib/supabase/server";
 import {
   projectFolderAccents,
@@ -235,4 +236,66 @@ export async function archiveProjectFolder(
   refreshProjectPaths();
 
   return { status: "success", message: "Project folder archived." };
+}
+
+export async function deleteProjectFolder(
+  _previousState: ProjectFolderFormState,
+  formData: FormData,
+): Promise<ProjectFolderFormState> {
+  const id = readText(formData, "id", 36);
+  if (!isUuid(id)) return { status: "error", message: "The folder ID is invalid." };
+
+  const supabase = await getApprovedAdminClient();
+  if (!supabase) {
+    return { status: "error", message: "Your verified admin session is no longer valid." };
+  }
+
+  const { data: folder, error: folderError } = await supabase
+    .from("folders")
+    .select("id")
+    .eq("id", id)
+    .eq("section", "project")
+    .maybeSingle();
+  if (folderError || !folder) {
+    return { status: "error", message: "The Project folder was not found." };
+  }
+
+  const projectsResult = await supabase
+    .from("projects")
+    .select("id,image_public_id")
+    .eq("folder_id", id);
+  if (projectsResult.error) {
+    return { status: "error", message: "Projects could not be loaded for deletion." };
+  }
+
+  const projectIds = (projectsResult.data ?? []).map((project) => project.id);
+  const galleryResult = projectIds.length
+    ? await supabase.from("project_images").select("image_public_id").in("project_id", projectIds)
+    : { data: [], error: null };
+  if (galleryResult.error) {
+    return { status: "error", message: "Project gallery files could not be loaded." };
+  }
+
+  const { data, error } = await supabase
+    .from("folders")
+    .delete()
+    .eq("id", id)
+    .eq("section", "project")
+    .select("id")
+    .maybeSingle();
+  if (error || !data) {
+    return { status: "error", message: "The Project folder could not be deleted." };
+  }
+
+  await Promise.all([
+    ...(projectsResult.data ?? []).map((project) =>
+      destroyManagedImage(project.image_public_id, "project"),
+    ),
+    ...(galleryResult.data ?? []).map((image) =>
+      destroyManagedImage(image.image_public_id, "project"),
+    ),
+  ]);
+
+  refreshProjectPaths();
+  return { status: "success", message: "Project folder, projects, and files permanently deleted." };
 }

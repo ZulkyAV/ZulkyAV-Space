@@ -5,6 +5,7 @@ import { AdminImageUploader } from "@/components/admin-image-uploader";
 import {
   archiveProjectContent,
   createProjectContent,
+  deleteProjectContent,
   updateProjectContent,
   type ProjectContentState,
 } from "@/app/admin/project/content-actions";
@@ -161,6 +162,7 @@ function CreateProject({ folders }: { folders: AdminProjectFolderOption[] }) {
 function ProjectEditor({ project, folders }: { project: AdminProjectContent; folders: AdminProjectFolderOption[] }) {
   const [state, action, pending] = useActionState(updateProjectContent, initialState);
   const [archiveState, archiveAction, archiving] = useActionState(archiveProjectContent, initialState);
+  const [deleteState, deleteAction, deleting] = useActionState(deleteProjectContent, initialState);
   return (
     <details className="rounded-2xl border border-white/10 bg-[#14141A] p-6 shadow-sm">
       <summary className="cursor-pointer list-none">
@@ -179,6 +181,19 @@ function ProjectEditor({ project, folders }: { project: AdminProjectContent; fol
         <input type="hidden" name="id" value={project.id} />
         <Message state={archiveState} />
         <button disabled={archiving} className="mt-3 rounded-xl border border-error-200 px-4 py-2 text-sm font-semibold text-error-700">{archiving ? 'Archiving...' : 'Unpublish & pause'}</button>
+      </form>
+      <form
+        action={deleteAction}
+        className="mt-5 border-t border-error-200/30 pt-5"
+        onSubmit={(event) => {
+          if (!window.confirm(`Permanently delete \"${project.title}\" and its managed images? This cannot be undone.`)) event.preventDefault();
+        }}
+      >
+        <input type="hidden" name="id" value={project.id} />
+        <Message state={deleteState} />
+        <button disabled={deleting} className="mt-3 rounded-xl bg-error-600 px-4 py-2 text-sm font-semibold text-white hover:bg-error-500 disabled:opacity-60">
+          {deleting ? 'Deleting...' : 'Delete project permanently'}
+        </button>
       </form>
     </details>
   );

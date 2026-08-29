@@ -100,6 +100,50 @@ export async function archiveShopFolder(
   return { status: "success", message: "Shop folder archived." };
 }
 
+export async function deleteShopFolder(
+  _state: ShopActionState,
+  formData: FormData,
+): Promise<ShopActionState> {
+  const id = readFormText(formData, "id", 36);
+  if (!isUuid(id)) return { status: "error", message: "Invalid folder." };
+
+  const supabase = await getApprovedAdminClient();
+  if (!supabase) return { status: "error", message: "Admin session expired." };
+
+  const { data: folder, error: folderError } = await supabase
+    .from("folders")
+    .select("id")
+    .eq("id", id)
+    .eq("section", "jualan")
+    .maybeSingle();
+  if (folderError || !folder) return { status: "error", message: "Shop folder not found." };
+
+  const productsResult = await supabase
+    .from("products")
+    .select("image_public_id")
+    .eq("folder_id", id);
+  if (productsResult.error) {
+    return { status: "error", message: "Product files could not be loaded for deletion." };
+  }
+
+  const { data, error } = await supabase
+    .from("folders")
+    .delete()
+    .eq("id", id)
+    .eq("section", "jualan")
+    .select("id")
+    .maybeSingle();
+  if (error || !data) return { status: "error", message: "Shop folder could not be deleted." };
+
+  await Promise.all(
+    (productsResult.data ?? []).map((product) =>
+      destroyManagedImage(product.image_public_id, "product"),
+    ),
+  );
+  refreshShop();
+  return { status: "success", message: "Shop folder and its products permanently deleted." };
+}
+
 type ParsedProduct = {
   folderId: string;
   name: string;
@@ -251,4 +295,34 @@ export async function deactivateProduct(
   if (error || !data) return { status: "error", message: "Product could not be deactivated." };
   refreshShop();
   return { status: "success", message: "Product hidden from public shop." };
+}
+
+export async function deleteProduct(
+  _state: ShopActionState,
+  formData: FormData,
+): Promise<ShopActionState> {
+  const id = readFormText(formData, "id", 36);
+  if (!isUuid(id)) return { status: "error", message: "Invalid product." };
+
+  const supabase = await getApprovedAdminClient();
+  if (!supabase) return { status: "error", message: "Admin session expired." };
+
+  const { data: product, error: productError } = await supabase
+    .from("products")
+    .select("id,image_public_id")
+    .eq("id", id)
+    .maybeSingle();
+  if (productError || !product) return { status: "error", message: "Product not found." };
+
+  const { data, error } = await supabase
+    .from("products")
+    .delete()
+    .eq("id", id)
+    .select("id")
+    .maybeSingle();
+  if (error || !data) return { status: "error", message: "Product could not be deleted." };
+
+  await destroyManagedImage(product.image_public_id, "product");
+  refreshShop();
+  return { status: "success", message: "Product permanently deleted." };
 }

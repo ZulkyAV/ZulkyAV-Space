@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import {
   archiveNoteFolder,
   createNoteFolder,
+  deleteNoteFolder,
   updateNoteFolder,
   type NoteFolderFormState,
 } from "@/app/admin/note/actions";
@@ -181,6 +182,10 @@ function FolderEditor({ folder }: { folder: AdminNoteFolder }) {
     archiveNoteFolder,
     initialState,
   );
+  const [deleteState, deleteAction, deleting] = useActionState(
+    deleteNoteFolder,
+    initialState,
+  );
 
   return (
     <article className="rounded-2xl border border-white/10 bg-[#14141A] p-5 shadow-sm sm:p-6">
@@ -298,6 +303,29 @@ function FolderEditor({ folder }: { folder: AdminNoteFolder }) {
             </button>
           </form>
         ) : null}
+
+        <form
+          action={deleteAction}
+          className="mt-5 border-t border-error-200/30 pt-5"
+          onSubmit={(event) => {
+            if (!window.confirm(`Permanently delete \"${folder.name}\" and its ${folder.noteCount} article(s)? This cannot be undone.`)) {
+              event.preventDefault();
+            }
+          }}
+        >
+          <input type="hidden" name="id" value={folder.id} />
+          <p className="mb-3 text-xs leading-5 text-error-700">
+            Permanent deletion also removes every article inside this folder.
+          </p>
+          <ResultMessage state={deleteState} />
+          <button
+            type="submit"
+            disabled={deleting}
+            className="mt-3 rounded-xl bg-error-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-error-500 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {deleting ? "Deleting..." : "Delete folder permanently"}
+          </button>
+        </form>
       </details>
     </article>
   );
